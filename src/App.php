@@ -9,8 +9,33 @@ use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class App
 {
-    public function run(string $path, ?string $queryParameters, ?string $authHeader): void
+    public function run(
+        string $path,
+        ?string $queryParameters,
+        ?string $authHeader,
+        ?string $origin,
+        ?string $accessControlRequestHeaders
+    ): void
     {
+
+        if ($origin) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+        }
+
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 86400');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+
+        if ($accessControlRequestHeaders) {
+            header('Access-Control-Allow-Headers: ' . $accessControlRequestHeaders);
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            http_response_code(200);
+            exit;
+        }
+
+        header('Content-Type: application/json');
 
         $config = require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.php';
         $token = $config['token'];

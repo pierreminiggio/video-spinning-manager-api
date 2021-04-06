@@ -24,7 +24,9 @@ if (strlen($calledEndPoint) > 1 && substr($calledEndPoint, -1) === '/') {
 (new App())->run(
     $calledEndPoint,
     $queryParameters,
-    $_SERVER['HTTP_AUTHORIZATION'] ?? null
+    $_SERVER['HTTP_AUTHORIZATION'] ?? null,
+    $_SERVER['HTTP_ORIGIN'] ?? null,
+    $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? null
 );
 
 exit;
