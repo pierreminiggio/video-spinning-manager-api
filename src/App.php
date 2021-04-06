@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Command\EndProcessCommand;
+use App\Controller\EndProcessController;
 use App\Controller\ToProcessListController;
 use App\Repository\ToProcessRepository;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
@@ -55,8 +57,21 @@ class App
             DatabaseConnection::UTF8_MB4
         ));
 
-        if ($path === '/') {
+        $doneString = '/done/';
+
+        if ($path === '/' && $_SERVER['REQUEST_METHOD'] === 'GET') {
             (new ToProcessListController(new ToProcessRepository($fetcher)))();
+            exit;
+        } elseif (
+            $_SERVER['REQUEST_METHOD'] === 'POST'
+            && strpos($path, $doneString) === 0
+            && $id = (int) substr($path, strlen($doneString))
+        ) {
+            (new EndProcessController(new EndProcessCommand($fetcher)))($id);
+            exit;
         }
+
+        http_response_code(404);
+        exit;
     }
 }
