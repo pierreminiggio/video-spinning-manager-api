@@ -4,8 +4,10 @@ namespace App;
 
 use App\Command\EndProcessCommand;
 use App\Controller\EndProcessController;
+use App\Controller\ToProcessDetailController;
 use App\Controller\ToProcessListController;
-use App\Repository\ToProcessRepository;
+use App\Query\ToProcessDetailQuery;
+use App\Query\ToProcessListQuery;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
@@ -58,9 +60,10 @@ class App
         ));
 
         $doneString = '/done/';
+        $contentString = '/content/';
 
         if ($path === '/' && $_SERVER['REQUEST_METHOD'] === 'GET') {
-            (new ToProcessListController(new ToProcessRepository($fetcher)))();
+            (new ToProcessListController(new ToProcessListQuery($fetcher)))();
             exit;
         } elseif (
             $_SERVER['REQUEST_METHOD'] === 'POST'
@@ -68,6 +71,13 @@ class App
             && $id = (int) substr($path, strlen($doneString))
         ) {
             (new EndProcessController(new EndProcessCommand($fetcher)))($id);
+            exit;
+        } elseif (
+            $_SERVER['REQUEST_METHOD'] === 'GET'
+            && strpos($path, $contentString) === 0
+            && $id = (int) substr($path, strlen($contentString))
+        ) {
+            (new ToProcessDetailController(new ToProcessDetailQuery($fetcher)))($id);
             exit;
         }
 

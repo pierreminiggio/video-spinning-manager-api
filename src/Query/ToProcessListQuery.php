@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Query;
 
 use App\Entity\ToProcess;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class ToProcessRepository
+class ToProcessListQuery
 {
     public function __construct(private DatabaseFetcher $fetcher)
     {
