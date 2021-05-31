@@ -3,9 +3,12 @@
 namespace App;
 
 use App\Command\EndProcessCommand;
+use App\Command\Video\CreateCommand;
+use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ToProcessDetailController;
 use App\Controller\ToProcessListController;
+use App\Http\Request\JsonBodyParser;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
@@ -79,9 +82,24 @@ class App
         ) {
             (new ToProcessDetailController(new ToProcessDetailQuery($fetcher)))($id);
             exit;
+        } elseif (
+            $_SERVER['REQUEST_METHOD'] === 'POST'
+            && strpos($path, $contentString) === 0
+            && $id = (int) substr($path, strlen($contentString))
+        ) {
+            (new CreateController(
+                new JsonBodyParser(),
+                new CreateCommand($fetcher)
+            ))($id, $this->getRequestBody());
+            exit;
         }
 
         http_response_code(404);
         exit;
+    }
+
+    protected function getRequestBody(): ?string
+    {
+        return file_get_contents('php://input') ?? null;
     }
 }
