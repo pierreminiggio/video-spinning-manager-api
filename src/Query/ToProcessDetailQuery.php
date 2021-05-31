@@ -4,6 +4,7 @@ namespace App\Query;
 
 use App\Entity\ToProcess;
 use App\Entity\ToProcessDetail;
+use App\Entity\Video\Video;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class ToProcessDetailQuery
@@ -26,7 +27,9 @@ class ToProcessDetailQuery
                 'youtube_video as yv',
                 'yv.id = scyv.youtube_id'
             )
-            ->where('sc.id = :id'),
+            ->where(
+                'sc.id = :id'
+            ),
             ['id' => $id]
         );
         
@@ -35,11 +38,28 @@ class ToProcessDetailQuery
         }
 
         $queried = $querieds[0];
-
-        return new ToProcessDetail(new ToProcess(
-            $queried['id'],
+        $content = new ToProcess(
+            (int) $queried['id'],
             $queried['title'],
             $queried['url']
-        ));
+        );
+
+        $queriedVideos = $this->fetcher->query(
+            $this->fetcher->createQuery(
+                'spinned_content_video'
+            )->select(
+                'id, name'
+            )->where(
+                'content_id = :id'
+            ),
+            ['id' => $id]
+        );
+
+        $videos = array_map(fn (array $queriedVideo): Video => new Video(
+            (int) $queriedVideo['id'],
+            $queriedVideo['name']
+        ), $queriedVideos);
+
+        return new ToProcessDetail($content, $videos);
     }
 }
