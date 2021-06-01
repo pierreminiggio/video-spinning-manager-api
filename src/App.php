@@ -120,9 +120,15 @@ class App
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
-    protected function getIntAfterPathPrefix(string $path, string $prefix): int|false
+    protected function getIntAfterPathPrefix(string $path, string $prefix): ?int
     {
-        return strpos($path, $prefix) === 0 && (int) substr($path, strlen($prefix));
+        if (strpos($path, $prefix) !== 0) {
+            return null;
+        }
+
+        $id = (int) substr($path, strlen($prefix));
+
+        return $id ?? null;
     }
 
     protected function getRequestBody(): ?string
