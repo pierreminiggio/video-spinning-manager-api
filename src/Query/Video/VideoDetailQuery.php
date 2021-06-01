@@ -22,7 +22,7 @@ class VideoDetailQuery implements Query
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, name'
+                'id, content_id, name'
             )->where(
                 'id = :id'
             ),
@@ -40,6 +40,6 @@ class VideoDetailQuery implements Query
             $queried['name']
         );
 
-        return new VideoDetail($video, file_exists($this->cacheFolder . $videoId . '.mp4'));
+        return new VideoDetail($video, file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'));
     }
 }
