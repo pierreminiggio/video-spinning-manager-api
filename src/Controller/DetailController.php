@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Query\ToProcessDetailQuery;
+use App\Query\Query;
 
-class ToProcessDetailController
+class DetailController
 {
 
-    public function __construct(private ToProcessDetailQuery $query)
+    public function __construct(private Query $query)
     {
     }
 
     public function __invoke(int $id): void
     {
-        $entity = $this->query->findById($id);
+        $entity = $this->query->execute($id);
 
         if ($entity === null) {
             http_response_code(404);

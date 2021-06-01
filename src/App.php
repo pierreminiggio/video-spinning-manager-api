@@ -4,6 +4,7 @@ namespace App;
 
 use App\Command\EndProcessCommand;
 use App\Command\Video\CreateCommand;
+use App\Controller\DetailController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ToProcessDetailController;
@@ -11,6 +12,7 @@ use App\Controller\ToProcessListController;
 use App\Http\Request\JsonBodyParser;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
+use App\Query\Video\VideoDetailQuery;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
@@ -62,40 +64,55 @@ class App
             DatabaseConnection::UTF8_MB4
         ));
 
-        $doneString = '/done/';
-        $contentString = '/content/';
-
         if ($path === '/' && $_SERVER['REQUEST_METHOD'] === 'GET') {
             (new ToProcessListController(new ToProcessListQuery($fetcher)))();
             exit;
         } elseif (
-            $_SERVER['REQUEST_METHOD'] === 'POST'
-            && strpos($path, $doneString) === 0
-            && $id = (int) substr($path, strlen($doneString))
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/done/')
         ) {
             (new EndProcessController(new EndProcessCommand($fetcher)))($id);
             exit;
         } elseif (
-            $_SERVER['REQUEST_METHOD'] === 'GET'
-            && strpos($path, $contentString) === 0
-            && $id = (int) substr($path, strlen($contentString))
+            $this->isGetRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
-            (new ToProcessDetailController(new ToProcessDetailQuery($fetcher)))($id);
+            (new DetailController(new ToProcessDetailQuery($fetcher)))($id);
             exit;
         } elseif (
-            $_SERVER['REQUEST_METHOD'] === 'POST'
-            && strpos($path, $contentString) === 0
-            && $id = (int) substr($path, strlen($contentString))
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
             (new CreateController(
                 new JsonBodyParser(),
                 new CreateCommand($fetcher)
             ))($id, $this->getRequestBody());
             exit;
+        } elseif (
+            $this->isGetRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/video/')
+        ) {
+            (new DetailController(new VideoDetailQuery($fetcher)))($id);
+            exit;
         }
 
         http_response_code(404);
         exit;
+    }
+
+    protected function isGetRequest(): bool
+    {
+        return $_SERVER['REQUEST_METHOD'] === 'GET';
+    }
+
+    protected function isPostRequest(): bool
+    {
+        return $_SERVER['REQUEST_METHOD'] === 'POST';
+    }
+
+    protected function getIntAfterPathPrefix(string $path, string $prefix): int|false
+    {
+        return strpos($path, $prefix) === 0 && (int) substr($path, strlen($prefix));
     }
 
     protected function getRequestBody(): ?string

@@ -7,13 +7,13 @@ use App\Entity\ToProcessDetail;
 use App\Entity\Video\Video;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class ToProcessDetailQuery
+class ToProcessDetailQuery implements Query
 {
     public function __construct(private DatabaseFetcher $fetcher)
     {
     }
 
-    public function findById(int $id): ?ToProcessDetail
+    public function execute(int $id): ?ToProcessDetail
     {
         $querieds = $this->fetcher->query(
             $this->fetcher->createQuery(
