@@ -9,7 +9,10 @@ use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class VideoDetailQuery implements Query
 {
-    public function __construct(private DatabaseFetcher $fetcher)
+    public function __construct(
+        private DatabaseFetcher $fetcher,
+        private string $cacheFolder
+    )
     {
     }
 
@@ -31,11 +34,12 @@ class VideoDetailQuery implements Query
         }
 
         $queried = $querieds[0];
+        $videoId = (int) $queried['id'];
         $video = new Video(
-            (int) $queried['id'],
+            $videoId,
             $queried['name']
         );
 
-        return new VideoDetail($video);
+        return new VideoDetail($video, file_exists($this->cacheFolder . $videoId . '.mp4'));
     }
 }

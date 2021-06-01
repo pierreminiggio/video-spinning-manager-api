@@ -5,6 +5,7 @@ namespace App;
 use App\Command\EndProcessCommand;
 use App\Command\Video\CreateCommand;
 use App\Controller\DetailController;
+use App\Controller\DownloaderController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ToProcessDetailController;
@@ -13,8 +14,10 @@ use App\Http\Request\JsonBodyParser;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use App\Query\Video\VideoDetailQuery;
+use App\Query\VideoLinkQuery;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
+use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
 
 class App
 {
@@ -92,7 +95,14 @@ class App
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/video/')
         ) {
-            (new DetailController(new VideoDetailQuery($fetcher)))($id);
+            (new DetailController(new VideoDetailQuery($fetcher, $this->getCacheFolder())))($id);
+            exit;
+        }
+        elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/download-video/')
+        ) {
+            (new DownloaderController(new VideoLinkQuery($fetcher), $this->getCacheFolder(), new Downloader()))($id);
             exit;
         }
 
@@ -118,5 +128,10 @@ class App
     protected function getRequestBody(): ?string
     {
         return file_get_contents('php://input') ?? null;
+    }
+
+    protected function getCacheFolder(): string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
     }
 }

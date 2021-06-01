@@ -15,6 +15,8 @@
         "sort-packages": true
     },
     "require": {
-        "pierreminiggio/database-fetcher": "^1.0"
+        "athlon1600/youtube-downloader": "dev-master",
+        "pierreminiggio/database-fetcher": "^1.0",
+        "pierreminiggio/mp4-youtube-video-downloader": "^1.0"
     }
 }
