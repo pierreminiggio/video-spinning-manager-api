@@ -21,6 +21,10 @@ if (strlen($calledEndPoint) > 1 && substr($calledEndPoint, -1) === '/') {
     $calledEndPoint = substr($calledEndPoint, 0, -1);
 }
 
+if (substr($queryParameters, 0, 1) === '?') {
+    $queryParameters = substr($queryParameters, 1);
+}
+
 (new App())->run(
     $calledEndPoint,
     $queryParameters,

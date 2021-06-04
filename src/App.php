@@ -8,6 +8,7 @@ use App\Controller\DetailController;
 use App\Controller\DownloaderController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
+use App\Controller\ThumbnailController;
 use App\Controller\ToProcessDetailController;
 use App\Controller\ToProcessListController;
 use App\Http\Request\JsonBodyParser;
@@ -47,6 +48,15 @@ class App
             exit;
         }
 
+        if (
+            $this->isGetRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/thumbnail/')
+        ) {
+            parse_str($queryParameters, $params);
+            (new ThumbnailController($this->getCacheFolder()))($id, $params['s'] ?? 0);
+            exit;
+        }
+
         header('Content-Type: application/json');
 
         $config = require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.php';
@@ -67,7 +77,7 @@ class App
             DatabaseConnection::UTF8_MB4
         ));
 
-        if ($path === '/' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($path === '/' && $this->isGetRequest()) {
             (new ToProcessListController(new ToProcessListQuery($fetcher)))();
             exit;
         } elseif (
@@ -97,8 +107,7 @@ class App
         ) {
             (new DetailController(new VideoDetailQuery($fetcher, $this->getCacheFolder())))($id);
             exit;
-        }
-        elseif (
+        } elseif (
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/download-video/')
         ) {
