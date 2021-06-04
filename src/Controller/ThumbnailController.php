@@ -26,7 +26,7 @@ class ThumbnailController
             return $filePath;
         }
 
-        shell_exec('ffmpeg -i ' . $this->cacheFolder . $videoId . '.mp4 -vframes 1 -an -s 1280x720 -ss ' . $seconds . ' ' . $filePath);
+        shell_exec('ffmpeg -i ' . $this->cacheFolder . $videoId . '.mp4 -vframes 1 -an -s 128x72 -ss ' . $seconds . ' ' . $filePath);
 
         return $filePath;
     }
