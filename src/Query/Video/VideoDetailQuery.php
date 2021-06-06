@@ -22,7 +22,7 @@ class VideoDetailQuery implements Query
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, name, width, height'
+                'id, content_id, name, width, height'
             )->where(
                 'id = :id'
             ),
