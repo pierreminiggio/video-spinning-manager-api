@@ -18,12 +18,21 @@ class CreateController
     {
         $jsonBody = $this->parser->parse($body);
 
-        if (empty($jsonBody['name'])) {
+        if (
+            empty($jsonBody['name'])
+            || empty($jsonBody['width'])
+            || empty($jsonBody['height'])
+        ) {
             http_response_code(400);
             return;
         }
 
-        $id = $this->command->execute($contentId, $jsonBody['name']);
+        $id = $this->command->execute(
+            $contentId,
+            $jsonBody['name'],
+            $jsonBody['width'],
+            $jsonBody['height']
+        );
         echo json_encode(['id' => $id]);
         http_response_code(200);
     }

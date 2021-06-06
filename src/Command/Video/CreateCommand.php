@@ -15,18 +15,25 @@ class CreateCommand
     /**
      * @throws Exception
      */
-    public function execute(int $contentId, string $name): int
+    public function execute(
+        int $contentId,
+        string $name,
+        int $width,
+        int $height
+    ): int
     {
         $this->fetcher->exec(
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->insertInto(
-                'name,content_id',
-                ':name,:content_id'
+                'name,content_id,width,height',
+                ':name,:content_id,:width,:height'
             ),
             [
                 'content_id' => $contentId,
-                'name' => $name
+                'name' => $name,
+                'width' => $width,
+                'height' => $height
             ]
         );
 

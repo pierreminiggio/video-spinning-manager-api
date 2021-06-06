@@ -1,0 +1,1 @@
+ALTER TABLE `spinned_content_video` ADD `width` INT NOT NULL  AFTER `name`,  ADD `height` INT NOT NULL AFTER `width`;
