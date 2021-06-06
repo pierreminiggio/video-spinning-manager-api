@@ -38,8 +38,8 @@ class VideoDetailQuery implements Query
         $video = new Video(
             $videoId,
             $queried['name'],
-            $queried['width'],
-            $queried['height']
+            (int) $queried['width'],
+            (int) $queried['height']
         );
 
         return new VideoDetail($video, file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'));

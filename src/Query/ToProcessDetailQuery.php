@@ -48,7 +48,7 @@ class ToProcessDetailQuery implements Query
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, name'
+                'id, name, width, height'
             )->where(
                 'content_id = :id'
             ),
@@ -57,7 +57,9 @@ class ToProcessDetailQuery implements Query
 
         $videos = array_map(fn (array $queriedVideo): Video => new Video(
             (int) $queriedVideo['id'],
-            $queriedVideo['name']
+            $queriedVideo['name'],
+            (int) $queriedVideo['width'],
+            (int) $queriedVideo['height']
         ), $queriedVideos);
 
         return new ToProcessDetail($content, $videos);
