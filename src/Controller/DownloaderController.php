@@ -53,7 +53,5 @@ class DownloaderController
         }
 
         http_response_code(204);
-
-        return;
     }
 }

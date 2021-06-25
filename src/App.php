@@ -22,6 +22,8 @@ use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use App\Query\Video\VideoDetailQuery;
 use App\Query\VideoLinkQuery;
+use App\Serializer\Serializer;
+use App\Serializer\SerializerInterface;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
@@ -96,7 +98,7 @@ class App
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
-            (new DetailController(new ToProcessDetailQuery($fetcher), $this->getNormalizer()))($id);
+            (new DetailController(new ToProcessDetailQuery($fetcher), $this->getSerializer()))($id);
             exit;
         } elseif (
             $this->isPostRequest()
@@ -113,7 +115,7 @@ class App
         ) {
             (new DetailController(
                 new VideoDetailQuery($fetcher, $this->getCacheFolder()),
-                $this->getNormalizer())
+                $this->getSerializer())
             )($id);
             exit;
         } elseif (
@@ -136,7 +138,8 @@ class App
             && $id = $this->getIntAfterPathPrefix($path, '/finish-video/')
         ) {
             (new FinishController(
-                new FinishCommand($fetcher)
+                new FinishCommand($fetcher),
+                $this->getSerializer()
             ))($id);
             exit;
         }
@@ -171,9 +174,9 @@ class App
         return file_get_contents('php://input') ?? null;
     }
 
-    protected function getNormalizer(): NormalizerInterface
+    protected function getSerializer(): SerializerInterface
     {
-        return (new NormalizerFactory())->make();
+        return new Serializer((new NormalizerFactory())->make());
     }
 
     protected function getCacheFolder(): string

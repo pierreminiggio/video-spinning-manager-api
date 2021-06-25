@@ -71,6 +71,10 @@ class VideoDetailQuery implements Query
             $editorState->texts = json_decode($queriedEditorState['texts'], true);
         }
 
-        return new VideoDetail($video, file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'), $editorState);
+        return new VideoDetail(
+            $video,
+            file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'),
+            $editorState
+        );
     }
 }
