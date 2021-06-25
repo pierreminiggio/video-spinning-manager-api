@@ -6,7 +6,7 @@ use App\Command\EndProcessCommand;
 use App\Command\Video\CreateCommand;
 use App\Controller\DetailController;
 use App\Controller\DownloaderController;
-App\Controller\Editor\UpdateController
+use App\Controller\Editor\UpdateController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
