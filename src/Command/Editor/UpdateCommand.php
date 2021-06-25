@@ -31,9 +31,9 @@ class UpdateCommand
             ),
             [
                 'video_id' => $videoId,
-                'clips' => $clips,
-                'texts' => $texts,
-                'clip_maker_props' => $clipMakerProps
+                'clips' => json_encode($clips),
+                'texts' => json_encode($texts),
+                'clip_maker_props' => json_encode($clipMakerProps)
             ]
         );
     }
