@@ -5,6 +5,7 @@ namespace App;
 use App\Command\Editor\UpdateCommand;
 use App\Command\EndProcessCommand;
 use App\Command\Video\CreateCommand;
+use App\Command\Video\FinishCommand;
 use App\Controller\DetailController;
 use App\Controller\DownloaderController;
 use App\Controller\Editor\UpdateController;
@@ -13,6 +14,7 @@ use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
 use App\Controller\ToProcessDetailController;
 use App\Controller\ToProcessListController;
+use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
 use App\Normalizer\NormalizerInterface;
@@ -128,6 +130,14 @@ class App
                 new JsonBodyParser(),
                 new UpdateCommand($fetcher)
             ))($id, $this->getRequestBody());
+            exit;
+        } elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/finish-video/')
+        ) {
+            (new FinishController(
+                new FinishCommand($fetcher)
+            ))($id);
             exit;
         }
 
