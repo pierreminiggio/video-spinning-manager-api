@@ -19,8 +19,8 @@ class VideoDetailNormalizer implements FocusedNormalizerInterface
     public function normalize(mixed $entity): array
     {
         /** @var VideoDetail $entity */
-        $normalizedEntity = $this->normalize($entity);
-        $normalizedEntity['video'] = $this->normalize($entity->video);
+        $normalizedEntity = $this->normalizer->normalize($entity);
+        $normalizedEntity['video'] = $this->normalizer->normalize($entity->video);
 
         return $normalizedEntity;
     }
