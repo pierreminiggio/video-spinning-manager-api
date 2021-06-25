@@ -22,9 +22,12 @@ class FinishCommand
                 'spinned_content_video'
             )->update(
                 'finished_at = :finished_at'
+            )->where(
+                'video_id = :video_id'
             ),
             [
-                'finished_at' => $finishedAt
+                'finished_at' => $finishedAt->format('Y-m-d H:i:s'),
+                'video_id' => $videoId
             ]
         );
     }
