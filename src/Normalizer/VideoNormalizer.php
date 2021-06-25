@@ -23,9 +23,7 @@ class VideoNormalizer implements FocusedNormalizerInterface
         $finishedAt = $entity->finishedAt;
 
         $normalizedEntity = $this->normalizer->normalize($entity);
-
-        $normalizedEntity['finishedAt'] = $finishedAt?->format(DateTimeInterface::ATOM)
-        ;
+        $normalizedEntity['finishedAt'] = $finishedAt?->format(DateTimeInterface::ATOM);
 
         return $normalizedEntity;
     }
