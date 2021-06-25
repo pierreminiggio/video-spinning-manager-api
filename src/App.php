@@ -14,6 +14,8 @@ use App\Controller\ThumbnailController;
 use App\Controller\ToProcessDetailController;
 use App\Controller\ToProcessListController;
 use App\Http\Request\JsonBodyParser;
+use App\Normalizer\NormalizerFactory;
+use App\Normalizer\NormalizerInterface;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use App\Query\Video\VideoDetailQuery;
@@ -92,7 +94,7 @@ class App
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
-            (new DetailController(new ToProcessDetailQuery($fetcher)))($id);
+            (new DetailController(new ToProcessDetailQuery($fetcher), $this->getNormalizer()))($id);
             exit;
         } elseif (
             $this->isPostRequest()
@@ -107,7 +109,10 @@ class App
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/video/')
         ) {
-            (new DetailController(new VideoDetailQuery($fetcher, $this->getCacheFolder())))($id);
+            (new DetailController(
+                new VideoDetailQuery($fetcher, $this->getCacheFolder()),
+                $this->getNormalizer())
+            )($id);
             exit;
         } elseif (
             $this->isPostRequest()
@@ -154,6 +159,11 @@ class App
     protected function getRequestBody(): ?string
     {
         return file_get_contents('php://input') ?? null;
+    }
+
+    protected function getNormalizer(): NormalizerInterface
+    {
+        return (new NormalizerFactory())->make();
     }
 
     protected function getCacheFolder(): string

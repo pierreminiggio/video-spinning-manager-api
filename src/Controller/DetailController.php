@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
+use App\Normalizer\NormalizerInterface;
 use App\Query\Query;
 
 class DetailController
 {
 
-    public function __construct(private Query $query)
+    public function __construct(private Query $query, private NormalizerInterface $normalizer)
     {
     }
 
@@ -22,6 +23,6 @@ class DetailController
         }
 
         http_response_code(200);
-        echo json_encode($entity);
+        echo json_encode($this->normalizer->normalize($entity));
     }
 }
