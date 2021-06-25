@@ -49,7 +49,7 @@ class ToProcessDetailQuery implements Query
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, name, width, height'
+                'id, name, width, height, finished_at'
             )->where(
                 'content_id = :id'
             ),
