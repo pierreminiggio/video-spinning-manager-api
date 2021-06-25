@@ -5,6 +5,7 @@ namespace App\Query;
 use App\Entity\ToProcess;
 use App\Entity\ToProcessDetail;
 use App\Entity\Video\Video;
+use DateTime;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class ToProcessDetailQuery implements Query
@@ -55,11 +56,13 @@ class ToProcessDetailQuery implements Query
             ['id' => $id]
         );
 
+        $finishedAtString = $queried['finished_at'];
         $videos = array_map(fn (array $queriedVideo): Video => new Video(
             (int) $queriedVideo['id'],
             $queriedVideo['name'],
             (int) $queriedVideo['width'],
-            (int) $queriedVideo['height']
+            (int) $queriedVideo['height'],
+            $finishedAtString ? new DateTime($finishedAtString) : null
         ), $queriedVideos);
 
         return new ToProcessDetail($content, $videos);

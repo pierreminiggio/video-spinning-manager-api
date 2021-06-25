@@ -6,6 +6,7 @@ use App\Entity\Video\EditorState;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
 use App\Query\Query;
+use DateTime;
 use NeutronStars\Database\Query as DatabaseQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
@@ -24,7 +25,7 @@ class VideoDetailQuery implements Query
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, content_id, name, width, height'
+                'id, content_id, name, width, height, finished_at'
             )->where(
                 'id = :id'
             ),
@@ -37,11 +38,13 @@ class VideoDetailQuery implements Query
 
         $queried = $querieds[0];
         $videoId = (int) $queried['id'];
+        $finishedAtString = $queried['finished_at'];
         $video = new Video(
             $videoId,
             $queried['name'],
             (int) $queried['width'],
-            (int) $queried['height']
+            (int) $queried['height'],
+            $finishedAtString ? new DateTime($finishedAtString) : null
         );
         
         $queriedEditorStates = $this->fetcher->query(
