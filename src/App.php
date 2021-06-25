@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Command\Editor\UpdateCommand;
 use App\Command\EndProcessCommand;
 use App\Command\Video\CreateCommand;
 use App\Controller\DetailController;
@@ -119,7 +120,8 @@ class App
             && $id = $this->getIntAfterPathPrefix($path, '/editor-state/')
         ) {
             (new UpdateController(
-                new JsonBodyParser()
+                new JsonBodyParser(),
+                new UpdateCommand($fetcher)
             ))($id, $this->getRequestBody());
             exit;
         }
