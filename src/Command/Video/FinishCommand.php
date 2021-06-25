@@ -23,11 +23,11 @@ class FinishCommand
             )->update(
                 'finished_at = :finished_at'
             )->where(
-                'video_id = :video_id'
+                'id = :id'
             ),
             [
                 'finished_at' => $finishedAt->format('Y-m-d H:i:s'),
-                'video_id' => $videoId
+                'id' => $videoId
             ]
         );
     }
