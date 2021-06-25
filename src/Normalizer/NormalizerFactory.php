@@ -7,9 +7,11 @@ class NormalizerFactory
     public function make(): NormalizerInterface
     {
         $defaultNormalizer = new DefaultNormalizer();
+        $videoNormalizer = new VideoNormalizer(new Normalizer([$defaultNormalizer]));
 
         return new Normalizer([
-            new VideoNormalizer($defaultNormalizer),
+            new VideoDetailNormalizer(new Normalizer([$videoNormalizer])),
+            $videoNormalizer,
             $defaultNormalizer
         ]);
     }
