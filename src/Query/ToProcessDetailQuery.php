@@ -56,13 +56,12 @@ class ToProcessDetailQuery implements Query
             ['id' => $id]
         );
 
-        $finishedAtString = $queried['finished_at'];
         $videos = array_map(fn (array $queriedVideo): Video => new Video(
             (int) $queriedVideo['id'],
             $queriedVideo['name'],
             (int) $queriedVideo['width'],
             (int) $queriedVideo['height'],
-            $finishedAtString ? new DateTime($finishedAtString) : null
+            $queriedVideo['finished_at'] ? new DateTime($queriedVideo['finished_at']) : null
         ), $queriedVideos);
 
         return new ToProcessDetail($content, $videos);
