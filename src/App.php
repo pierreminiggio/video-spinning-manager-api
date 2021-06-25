@@ -113,6 +113,12 @@ class App
         ) {
             (new DownloaderController(new VideoLinkQuery($fetcher), $this->getCacheFolder(), new Downloader()))($id);
             exit;
+        } elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/editor-state/')
+        ) {
+            var_dump('editor state');
+            exit;
         }
 
         http_response_code(404);
