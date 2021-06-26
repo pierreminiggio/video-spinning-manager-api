@@ -20,7 +20,6 @@ class ListQuery
             )->orderBy(
                 'name'
             )
-            []
         );
 
         return array_map(fn (array $queriedEntity): array => [
