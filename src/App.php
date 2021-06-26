@@ -8,6 +8,7 @@ use App\Command\Video\CreateCommand;
 use App\Command\Video\FinishCommand;
 use App\Controller\DetailController;
 use App\Controller\DownloaderController;
+use App\Controller\Editor\Text\Preset\ListController;
 use App\Controller\Editor\UpdateController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
@@ -18,6 +19,7 @@ use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
 use App\Normalizer\NormalizerInterface;
+use App\Query\Editor\Preset\ListQuery;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use App\Query\Video\VideoDetailQuery;
@@ -87,6 +89,9 @@ class App
 
         if ($path === '/' && $this->isGetRequest()) {
             (new ToProcessListController(new ToProcessListQuery($fetcher)))();
+            exit;
+        } elseif ($path === '/text-presets' && $this->isGetRequest()) {
+            (new ListController(new ListQuery($fetcher), $this->getSerializer()))();
             exit;
         } elseif (
             $this->isPostRequest()
