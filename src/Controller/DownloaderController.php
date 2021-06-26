@@ -42,13 +42,6 @@ class DownloaderController
         try {
             $this->downloader->download($link, $filename);
         } catch (Throwable $e) {
-            if ($e->getMessage() !== 'Best link not found') {
-                echo json_encode(['error' => $e->getMessage()]);
-                http_response_code(500);
-
-                return;
-            }
-            
             shell_exec('youtube-dl https://youtu.be/' . substr($link, strlen('https://www.youtube.com/watch?v=')) . ' -f mp4 --output ' . $filename);
         }
 
