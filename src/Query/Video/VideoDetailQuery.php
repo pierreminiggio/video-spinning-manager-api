@@ -6,6 +6,7 @@ use App\Entity\Video\EditorState;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
 use App\Query\QueryWithIdParameter;
+use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use DateTime;
 use NeutronStars\Database\Query;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
@@ -14,6 +15,7 @@ class VideoDetailQuery implements QueryWithIdParameter
 {
     public function __construct(
         private DatabaseFetcher $fetcher,
+        private CurrentRenderStatusForVideoQuery $renderCheckQuery,
         private string $cacheFolder
     )
     {
@@ -72,9 +74,12 @@ class VideoDetailQuery implements QueryWithIdParameter
             $editorState->texts = json_decode($queriedEditorState['texts'], true);
         }
 
+        $renderStatus = $this->renderCheckQuery->execute($videoId);
+
         return new VideoDetail(
             $video,
             file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'),
+            $renderStatus !== null && $renderStatus->hasRenderedFile(),
             $editorState
         );
     }

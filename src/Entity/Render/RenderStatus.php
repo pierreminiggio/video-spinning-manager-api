@@ -15,4 +15,9 @@ class RenderStatus
     )
     {
     }
+
+    public function hasRenderedFile(): bool
+    {
+        return $this->finishedAt !== null && $this->filePath !== null;
+    }
 }

@@ -14,7 +14,7 @@ class DisplayController
     {
         $renderStatus = $this->query->execute($videoId);
 
-        if ($renderStatus === null) {
+        if ($renderStatus === null || ! $renderStatus->hasRenderedFile()) {
             http_response_code(404);
         }
 

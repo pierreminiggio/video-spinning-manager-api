@@ -120,7 +120,7 @@ class App
             && $id = $this->getIntAfterPathPrefix($path, '/video/')
         ) {
             (new DetailController(
-                new VideoDetailQuery($fetcher, $this->getCacheFolder()),
+                new VideoDetailQuery($fetcher, new CurrentRenderStatusForVideoQuery($fetcher), $this->getCacheFolder()),
                 $this->getSerializer())
             )($id);
             exit;
