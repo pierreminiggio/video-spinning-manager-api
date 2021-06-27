@@ -2,7 +2,7 @@
 
 namespace App\Query;
 
-interface Query
+interface QueryWithIdParameter
 {
     public function execute(int $id): mixed;
 }

@@ -2,16 +2,16 @@
 
 namespace App\Controller;
 
-use App\Query\Query;
+use App\Query\QueryWithIdParameter;
 use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
 use Throwable;
 
 class DownloaderController
 {
     public function __construct(
-        private Query $query,
-        private string $cacheFolder,
-        private Downloader $downloader
+        private QueryWithIdParameter $query,
+        private string               $cacheFolder,
+        private Downloader           $downloader
     )
     {
     }

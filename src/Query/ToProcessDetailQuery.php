@@ -8,7 +8,7 @@ use App\Entity\Video\Video;
 use DateTime;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class ToProcessDetailQuery implements Query
+class ToProcessDetailQuery implements QueryWithIdParameter
 {
     public function __construct(private DatabaseFetcher $fetcher)
     {

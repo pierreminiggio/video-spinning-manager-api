@@ -18,7 +18,6 @@ use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
-use App\Normalizer\NormalizerInterface;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;

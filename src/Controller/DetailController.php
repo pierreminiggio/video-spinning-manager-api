@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Query\Query;
+use App\Query\QueryWithIdParameter;
 use App\Serializer\SerializerInterface;
 
 class DetailController
 {
 
-    public function __construct(private Query $query, private SerializerInterface $serializer)
+    public function __construct(private QueryWithIdParameter $query, private SerializerInterface $serializer)
     {
     }
 

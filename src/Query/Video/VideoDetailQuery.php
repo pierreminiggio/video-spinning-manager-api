@@ -5,12 +5,12 @@ namespace App\Query\Video;
 use App\Entity\Video\EditorState;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
-use App\Query\Query;
+use App\Query\QueryWithIdParameter;
 use DateTime;
 use NeutronStars\Database\Query as DatabaseQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class VideoDetailQuery implements Query
+class VideoDetailQuery implements QueryWithIdParameter
 {
     public function __construct(
         private DatabaseFetcher $fetcher,

@@ -2,10 +2,10 @@
 
 namespace App\Query;
 
-use App\Query\Query;
+use App\Query\QueryWithIdParameter;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class VideoLinkQuery implements Query
+class VideoLinkQuery implements QueryWithIdParameter
 {
     public function __construct(
         private DatabaseFetcher $fetcher,
