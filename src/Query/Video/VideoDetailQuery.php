@@ -7,7 +7,7 @@ use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
 use App\Query\QueryWithIdParameter;
 use DateTime;
-use NeutronStars\Database\Query as DatabaseQuery;
+use NeutronStars\Database\Query;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class VideoDetailQuery implements QueryWithIdParameter
@@ -57,7 +57,7 @@ class VideoDetailQuery implements QueryWithIdParameter
                 'video_id = :video_id'
             )->orderBy(
                 'created_at',
-                DatabaseQuery::ORDER_BY_DESC
+                Query::ORDER_BY_DESC
             )->limit(
                 1
             ),

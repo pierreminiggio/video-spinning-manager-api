@@ -2,7 +2,6 @@
 
 namespace App\Query\Video;
 
-use NeutronStars\Database\Query;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class VideosToRenderQuery

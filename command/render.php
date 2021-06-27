@@ -3,8 +3,10 @@
 use App\Command\Render\MarkAsFailedCommand;
 use App\Command\Render\MarkAsFinishedCommand;
 use App\Command\Render\MarkAsRenderingCommand;
+use App\Entity\Render\VideoConfig;
 use App\Query\Editor\CurrentStateQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
+use App\Query\Render\VideoConfigQuery;
 use App\Query\Video\VideosToRenderQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
@@ -33,12 +35,16 @@ $currentRenderStatusQuery = new CurrentRenderStatusForVideoQuery($fetcher);
 $markAsRenderingCommand = new MarkAsRenderingCommand($fetcher);
 
 $currentEditorStateQuery = new CurrentStateQuery($fetcher);
+$videoConfigQuery = new VideoConfigQuery($fetcher);
 
 $renderer = new GithubActionRemotionRenderer();
 $rendererProjects = $config['rendererProjects'];
 
 $markAsFailedCommand = new MarkAsFailedCommand($fetcher);
 $markAsFinishedCommand = new MarkAsFinishedCommand($fetcher);
+
+/** @var array<int, VideoConfig|null> $videoConfigs */
+$videoConfigs = [];
 
 foreach ($videoIdsToRender as $videoIdToRender) {
     $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
@@ -54,7 +60,17 @@ foreach ($videoIdsToRender as $videoIdToRender) {
         continue;
     }
 
-    $markAsRenderingCommand->execute($videoIdToRender);
+    if (! isset($videoConfigs[$videoIdToRender])) {
+        $videoConfigs[$videoIdToRender] = $videoConfigQuery->execute($videoIdToRender);
+    }
+
+    $videoConfig = $videoConfigs[$videoIdToRender];
+
+    if ($videoConfig === null) {
+        // No config for video ? That's odd
+        continue;
+    }
+
     $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
 
     if ($renderStatus === null) {
@@ -64,6 +80,27 @@ foreach ($videoIdsToRender as $videoIdToRender) {
 
     $rendererProject = $rendererProjects[array_rand($rendererProjects)];
 
+    $durationInFrames = 0;
+    $jsonProps = json_decode($props, true);
+
+    if (! isset($jsonProps['clips'])) {
+        // no clip ? :o
+        continue;
+    }
+
+    $clips = $jsonProps['clips'];
+
+    foreach ($clips as $clip) {
+        if (! isset($clip['durationInFrames'])) {
+            // wtf
+            continue;
+        }
+
+        $durationInFrames += (int) $clip['durationInFrames'];
+    }
+
+    $markAsRenderingCommand->execute($videoIdToRender);
+
     try {
         $videoFile = $renderer->render(
             $rendererProject['token'],
@@ -72,7 +109,11 @@ foreach ($videoIdsToRender as $videoIdToRender) {
             30,
             1,
             [
-                'props' => $props
+                'props' => $props,
+                'width' => $videoConfig->width,
+                'height' => $videoConfig->height,
+                'fps' => $videoConfig->fps,
+                'durationInFrames' => $durationInFrames
             ]
         );
     } catch (GithubActionRemotionRendererException $e) {
