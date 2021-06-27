@@ -19,21 +19,23 @@ class CreateCommand
         int $contentId,
         string $name,
         int $width,
-        int $height
+        int $height,
+        int $fps
     ): int
     {
         $this->fetcher->exec(
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->insertInto(
-                'name,content_id,width,height',
-                ':name,:content_id,:width,:height'
+                'name,content_id,width,height,fps',
+                ':name,:content_id,:width,:height,:fps'
             ),
             [
                 'content_id' => $contentId,
                 'name' => $name,
                 'width' => $width,
-                'height' => $height
+                'height' => $height,
+                'fps' => $fps
             ]
         );
 

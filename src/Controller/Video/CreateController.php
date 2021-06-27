@@ -22,6 +22,7 @@ class CreateController
             empty($jsonBody['name'])
             || empty($jsonBody['width'])
             || empty($jsonBody['height'])
+            || empty($jsonBody['fps'])
         ) {
             http_response_code(400);
             return;
@@ -31,7 +32,8 @@ class CreateController
             $contentId,
             $jsonBody['name'],
             $jsonBody['width'],
-            $jsonBody['height']
+            $jsonBody['height'],
+            $jsonBody['fps']
         );
         echo json_encode(['id' => $id]);
         http_response_code(200);
