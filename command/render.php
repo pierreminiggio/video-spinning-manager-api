@@ -1,6 +1,7 @@
 <?php
 
 use App\Command\Render\MarkAsFailedCommand;
+use App\Command\Render\MarkAsFinishedCommand;
 use App\Command\Render\MarkAsRenderingCommand;
 use App\Query\Editor\CurrentStateQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
@@ -37,6 +38,7 @@ $renderer = new GithubActionRemotionRenderer();
 $rendererProjects = $config['rendererProjects'];
 
 $markAsFailedCommand = new MarkAsFailedCommand($fetcher);
+$markAsFinishedCommand = new MarkAsFinishedCommand($fetcher);
 
 foreach ($videoIdsToRender as $videoIdToRender) {
     $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
@@ -84,7 +86,5 @@ foreach ($videoIdsToRender as $videoIdToRender) {
         continue;
     }
 
-    var_dump($videoFile);
-    // v TODO REMOVE TEST COMMENT v
-    break;
+    $markAsFinishedCommand->execute($renderStatus->id, $videoFile);
 }
