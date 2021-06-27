@@ -31,7 +31,7 @@ class CurrentRenderStatusForVideoQuery
             )->orderBy(
                 'created_at',
                 Query::ORDER_BY_DESC
-            ),
+            )->limit(1),
             ['video_id' => $videoId]
         );
 

@@ -14,10 +14,12 @@
     "config": {
         "sort-packages": true
     },
+    "minimum-stability": "dev",
     "require": {
         "athlon1600/youtube-downloader": "dev-master",
         "pierreminiggio/config-provider": "^1.0",
         "pierreminiggio/database-fetcher": "^1.0",
+        "pierreminiggio/github-action-remotion-renderer": "dev-main",
         "pierreminiggio/mp4-youtube-video-downloader": "^1.0"
     }
 }

@@ -7,5 +7,12 @@ return [
         'database' => 'channel_storage',
         'username' => '',
         'password' => ''
+    ],
+    'rendererProjects' => [
+        [
+            'token' => '',
+            'account' => '',
+            'project' => 'spinning-manager-clip-maker'
+        ]
     ]
 ];
