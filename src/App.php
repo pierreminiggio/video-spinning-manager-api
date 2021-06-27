@@ -10,6 +10,7 @@ use App\Controller\DetailController;
 use App\Controller\DownloaderController;
 use App\Controller\Editor\Text\Preset\ListController;
 use App\Controller\Editor\UpdateController;
+use App\Controller\Render\DisplayController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
@@ -19,6 +20,7 @@ use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
 use App\Query\Editor\Preset\ListQuery;
+use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
 use App\Query\Video\VideoDetailQuery;
@@ -144,6 +146,14 @@ class App
             (new FinishController(
                 new FinishCommand($fetcher),
                 $this->getSerializer()
+            ))($id);
+            exit;
+        } elseif (
+            $this->isGetRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/render/')
+        ) {
+            (new DisplayController(
+                new CurrentRenderStatusForVideoQuery($fetcher)
             ))($id);
             exit;
         }
