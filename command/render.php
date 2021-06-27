@@ -1,5 +1,6 @@
 <?php
 
+use App\Command\Render\MarkAsRenderingCommand;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\Video\VideosToRenderQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
@@ -24,11 +25,25 @@ $query = new VideosToRenderQuery($fetcher);
 $videoIdsToRender = $query->execute();
 
 $currentRenderStatusQuery = new CurrentRenderStatusForVideoQuery($fetcher);
+$markAsRenderingCommand = new MarkAsRenderingCommand($fetcher);
 
 foreach ($videoIdsToRender as $videoIdToRender) {
     $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
 
-//    if ($renderStatus->finishedAt) {
-//        continue;
-//    }
+    $isAlreadyRendering = $renderStatus !== null && $renderStatus->failedAt === null;
+    if ($isAlreadyRendering) {
+        continue;
+    }
+
+    if ($renderStatus === null) {
+        $markAsRenderingCommand->execute($videoIdToRender);
+        $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
+    }
+
+    if ($renderStatus === null) {
+        // Mark as rendering failed ?
+        continue;
+    }
+
+    var_dump($renderStatus);
 }

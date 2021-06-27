@@ -16,8 +16,10 @@ class MarkAsRenderingCommand
             $this->fetcher->createQuery(
                 'spinned_content_video_render_status'
             )->insertInto(
-                ''
-            )
+                'video_id',
+                ':video_id'
+            ),
+            ['video_id' => $videoId]
         );
     }
 }
