@@ -4,7 +4,7 @@ CREATE TABLE `channel_storage`.`spinned_content_video_render_status` (
     `finished_at` DATETIME NULL,
     `file_path` VARCHAR(255) NULL,
     `failed_at` DATETIME NULL,
-    `failed_reason` TEXT NULL,
+    `fail_reason` TEXT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;

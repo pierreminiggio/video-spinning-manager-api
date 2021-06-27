@@ -1,5 +1,6 @@
 <?php
 
+use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\Video\VideosToRenderQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
@@ -21,4 +22,13 @@ $fetcher = new DatabaseFetcher(new DatabaseConnection(
 
 $query = new VideosToRenderQuery($fetcher);
 $videoIdsToRender = $query->execute();
-var_dump($videoIdsToRender);
+
+$currentRenderStatusQuery = new CurrentRenderStatusForVideoQuery($fetcher);
+
+foreach ($videoIdsToRender as $videoIdToRender) {
+    $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
+
+//    if ($renderStatus->finishedAt) {
+//        continue;
+//    }
+}
