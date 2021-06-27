@@ -71,13 +71,6 @@ foreach ($videoIdsToRender as $videoIdToRender) {
         continue;
     }
 
-    $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
-
-    if ($renderStatus === null) {
-        // Mark as rendering failed ?
-        continue;
-    }
-
     $rendererProject = $rendererProjects[array_rand($rendererProjects)];
 
     $durationInFrames = 0;
@@ -100,6 +93,12 @@ foreach ($videoIdsToRender as $videoIdToRender) {
     }
 
     $markAsRenderingCommand->execute($videoIdToRender);
+    $renderStatus = $currentRenderStatusQuery->execute($videoIdToRender);
+
+    if ($renderStatus === null) {
+        // Mark as rendering failed ?
+        continue;
+    }
 
     try {
         $videoFile = $renderer->render(
@@ -110,10 +109,10 @@ foreach ($videoIdsToRender as $videoIdToRender) {
             1,
             [
                 'props' => $props,
-                'width' => $videoConfig->width,
-                'height' => $videoConfig->height,
-                'fps' => $videoConfig->fps,
-                'durationInFrames' => $durationInFrames
+                'width' => (string) $videoConfig->width,
+                'height' => (string) $videoConfig->height,
+                'fps' => (string) $videoConfig->fps,
+                'durationInFrames' => (string) $durationInFrames
             ]
         );
     } catch (GithubActionRemotionRendererException $e) {
