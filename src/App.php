@@ -30,6 +30,7 @@ use App\Serializer\SerializerInterface;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
+use RuntimeException;
 
 class App
 {
@@ -71,13 +72,6 @@ class App
         header('Content-Type: application/json');
 
         $config = require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.php';
-        $token = $config['token'];
-
-        if (! $authHeader || $authHeader !== 'Bearer ' . $token) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            exit;
-        }
 
         $dbConfig = $config['db'];
         $fetcher = new DatabaseFetcher(new DatabaseConnection(
@@ -89,27 +83,32 @@ class App
         ));
 
         if ($path === '/' && $this->isGetRequest()) {
+            $this->protectUsingToken($authHeader, $config);
             (new ToProcessListController(new ToProcessListQuery($fetcher)))();
             exit;
         } elseif ($path === '/text-presets' && $this->isGetRequest()) {
+            $this->protectUsingToken($authHeader, $config);
             (new ListController(new ListQuery($fetcher), $this->getSerializer()))();
             exit;
         } elseif (
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/done/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new EndProcessController(new EndProcessCommand($fetcher)))($id);
             exit;
         } elseif (
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new DetailController(new ToProcessDetailQuery($fetcher), $this->getSerializer()))($id);
             exit;
         } elseif (
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/content/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new CreateController(
                 new JsonBodyParser(),
                 new CreateCommand($fetcher)
@@ -119,6 +118,7 @@ class App
             $this->isGetRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/video/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new DetailController(
                 new VideoDetailQuery($fetcher, new CurrentRenderStatusForVideoQuery($fetcher), $this->getCacheFolder()),
                 $this->getSerializer())
@@ -128,12 +128,14 @@ class App
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/download-video/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new DownloaderController(new VideoLinkQuery($fetcher), $this->getCacheFolder(), new Downloader()))($id);
             exit;
         } elseif (
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/editor-state/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new UpdateController(
                 new JsonBodyParser(),
                 new UpdateCommand($fetcher)
@@ -143,6 +145,7 @@ class App
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/finish-video/')
         ) {
+            $this->protectUsingToken($authHeader, $config);
             (new FinishController(
                 new FinishCommand($fetcher),
                 $this->getSerializer()
@@ -181,6 +184,21 @@ class App
         $id = (int) substr($path, strlen($prefix));
 
         return $id ?? null;
+    }
+
+    protected function protectUsingToken(?string $authHeader, array $config): void
+    {
+        if (! isset($config['token'])) {
+            throw new RuntimeException('bad config, no token');
+        }
+
+        $token = $config['token'];
+
+        if (! $authHeader || $authHeader !== 'Bearer ' . $token) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
     }
 
     protected function getRequestBody(): ?string
