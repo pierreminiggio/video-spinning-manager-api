@@ -49,7 +49,7 @@ class ToProcessDetailQuery implements QueryWithIdParameter
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, name, width, height, finished_at'
+                'id, name, width, height, fps, finished_at'
             )->where(
                 'content_id = :id'
             ),
@@ -61,6 +61,7 @@ class ToProcessDetailQuery implements QueryWithIdParameter
             $queriedVideo['name'],
             (int) $queriedVideo['width'],
             (int) $queriedVideo['height'],
+            (int) $queriedVideo['fps'],
             $queriedVideo['finished_at'] ? new DateTime($queriedVideo['finished_at']) : null
         ), $queriedVideos);
 

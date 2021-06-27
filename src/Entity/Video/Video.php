@@ -11,6 +11,7 @@ class Video
         public string $name,
         public int $width,
         public int $height,
+        public int $fps,
         public ?DateTimeInterface $finishedAt
     )
     {

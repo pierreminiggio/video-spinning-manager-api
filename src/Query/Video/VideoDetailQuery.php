@@ -25,7 +25,7 @@ class VideoDetailQuery implements QueryWithIdParameter
             $this->fetcher->createQuery(
                 'spinned_content_video'
             )->select(
-                'id, content_id, name, width, height, finished_at'
+                'id, content_id, name, width, height, fps, finished_at'
             )->where(
                 'id = :id'
             ),
@@ -44,6 +44,7 @@ class VideoDetailQuery implements QueryWithIdParameter
             $queried['name'],
             (int) $queried['width'],
             (int) $queried['height'],
+            (int) $queried['fps'],
             $finishedAtString ? new DateTime($finishedAtString) : null
         );
         
