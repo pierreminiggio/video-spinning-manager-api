@@ -105,7 +105,7 @@ foreach ($videoIdsToRender as $videoIdToRender) {
             $rendererProject['token'],
             $rendererProject['account'],
             $rendererProject['project'],
-            30,
+            300,
             1,
             [
                 'props' => $props,
