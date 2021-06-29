@@ -1,4 +1,4 @@
-CREATE TABLE `channel_storage`.`postable_tiktok_account` (
+CREATE TABLE `postable_tiktok_account` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `account_id` INT NOT NULL,
     `api_url` TEXT NOT NULL,
