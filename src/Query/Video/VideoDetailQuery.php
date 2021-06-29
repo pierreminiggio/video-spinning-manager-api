@@ -5,6 +5,7 @@ namespace App\Query\Video;
 use App\Entity\Video\EditorState;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
+use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\QueryWithIdParameter;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use DateTime;
@@ -14,9 +15,10 @@ use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 class VideoDetailQuery implements QueryWithIdParameter
 {
     public function __construct(
-        private DatabaseFetcher $fetcher,
-        private CurrentRenderStatusForVideoQuery $renderCheckQuery,
-        private string $cacheFolder
+        private DatabaseFetcher                   $fetcher,
+        private CurrentRenderStatusForVideoQuery  $renderCheckQuery,
+        private SocialMediaAccountsByContentQuery $socialMediaAccountsQuery,
+        private string                            $cacheFolder
     )
     {
     }
@@ -76,11 +78,14 @@ class VideoDetailQuery implements QueryWithIdParameter
 
         $renderStatus = $this->renderCheckQuery->execute($videoId);
 
+        $contentId = (int) $queried['content_id'];
+
         return new VideoDetail(
             $video,
-            file_exists($this->cacheFolder . (int) $queried['content_id'] . '.mp4'),
+            file_exists($this->cacheFolder . $contentId . '.mp4'),
             $renderStatus !== null && $renderStatus->hasRenderedFile(),
-            $editorState
+            $editorState,
+            $this->socialMediaAccountsQuery->execute($contentId)
         );
     }
 }

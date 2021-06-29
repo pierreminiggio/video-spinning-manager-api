@@ -19,6 +19,7 @@ use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
+use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
@@ -120,7 +121,12 @@ class App
         ) {
             $this->protectUsingToken($authHeader, $config);
             (new DetailController(
-                new VideoDetailQuery($fetcher, new CurrentRenderStatusForVideoQuery($fetcher), $this->getCacheFolder()),
+                new VideoDetailQuery(
+                    $fetcher,
+                    new CurrentRenderStatusForVideoQuery($fetcher),
+                    new SocialMediaAccountsByContentQuery($fetcher),
+                    $this->getCacheFolder()
+                ),
                 $this->getSerializer())
             )($id);
             exit;
