@@ -1,4 +1,4 @@
-CREATE TABLE `channel_storage`.`spinned_content_video_render_status` (
+CREATE TABLE `spinned_content_video_render_status` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `video_id` INT NOT NULL,
     `finished_at` DATETIME NULL,

@@ -16,7 +16,7 @@ class DisplayController
 
         if ($renderStatus === null || ! $renderStatus->hasRenderedFile()) {
             http_response_code(404);
-            
+
             return;
         }
 
