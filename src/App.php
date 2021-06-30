@@ -4,6 +4,7 @@ namespace App;
 
 use App\Command\Editor\UpdateCommand;
 use App\Command\EndProcessCommand;
+use App\Command\Social\TikTok\PostCommand;
 use App\Command\Video\CreateCommand;
 use App\Command\Video\FinishCommand;
 use App\Controller\DetailController;
@@ -11,6 +12,7 @@ use App\Controller\DownloaderController;
 use App\Controller\Editor\Text\Preset\ListController;
 use App\Controller\Editor\UpdateController;
 use App\Controller\Render\DisplayController;
+use App\Controller\Social\TikTok\PostController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
@@ -20,6 +22,7 @@ use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
 use App\Query\Account\SocialMediaAccountsByContentQuery;
+use App\Query\Account\TikTok\CanVideoBePostedOnThisTikTokAccountQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
@@ -164,6 +167,16 @@ class App
             (new DisplayController(
                 new CurrentRenderStatusForVideoQuery($fetcher)
             ))($id);
+            exit;
+        } elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/post-to-tiktok/')
+        ) {
+            $this->protectUsingToken($authHeader, $config);
+            (new PostController(
+                new CanVideoBePostedOnThisTikTokAccountQuery($fetcher),
+                new PostCommand($fetcher)
+            ))($id, $this->getRequestBody());
             exit;
         }
 
