@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'url' => 'https://api.spinner.ggio.fr',
     'token' => '',
     'db' => [
         'host' => '',
