@@ -80,8 +80,7 @@ foreach ($tikTokIdsToUpload as $tikTokIdToUpload) {
 
     $markAsUploadingCommand->execute(UploadTypeEnum::TIKTOK, $tikTokIdToUpload);
 
-    //$curl = curl_init($account->url);
-    $curl = curl_init('https://tiktok-poster-api.ggio.fr/iluminati312');
+    $curl = curl_init($account->url);
 
     $authHeader = ['Content-Type: application/json' , 'Authorization: Bearer ' . $account->token];
     curl_setopt_array($curl, [
