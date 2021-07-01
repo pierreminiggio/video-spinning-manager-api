@@ -5,6 +5,7 @@ namespace App\Query\Video;
 use App\Entity\Video\EditorState;
 use App\Entity\Video\Video;
 use App\Entity\Video\VideoDetail;
+use App\Query\Account\PostedOnAccountsQuery;
 use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\QueryWithIdParameter;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
@@ -18,6 +19,7 @@ class VideoDetailQuery implements QueryWithIdParameter
         private DatabaseFetcher                   $fetcher,
         private CurrentRenderStatusForVideoQuery  $renderCheckQuery,
         private SocialMediaAccountsByContentQuery $socialMediaAccountsQuery,
+        private PostedOnAccountsQuery             $postedOnAccountQuery,
         private string                            $cacheFolder
     )
     {
@@ -85,7 +87,8 @@ class VideoDetailQuery implements QueryWithIdParameter
             file_exists($this->cacheFolder . $contentId . '.mp4'),
             $renderStatus !== null && $renderStatus->hasRenderedFile(),
             $editorState,
-            $this->socialMediaAccountsQuery->execute($contentId)
+            $this->socialMediaAccountsQuery->execute($contentId),
+            $this->postedOnAccountQuery->execute($videoId)
         );
     }
 }
