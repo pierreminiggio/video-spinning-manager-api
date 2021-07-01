@@ -13,7 +13,7 @@ class TikTokUploadQuery
     {
     }
 
-    public function execute(int $tiktokId): mixed
+    public function execute(int $tiktokId): ?TikTokUpload
     {
         $queriedTikToks = $this->fetcher->query(
             $this->fetcher->createQuery(

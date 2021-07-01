@@ -1,5 +1,8 @@
 <?php
 
+use App\Query\Account\TikTok\AccountQuery;
+use App\Query\Render\CurrentRenderStatusForVideoQuery;
+use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
 use App\Query\Video\TikTok\TikTokUploadQuery;
 use App\Query\Video\TikTok\VideosToUploadQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
@@ -24,15 +27,40 @@ $query = new VideosToUploadQuery($fetcher);
 $tikTokIdsToUpload = $query->execute();
 
 $tikTokUploadQuery = new TikTokUploadQuery($fetcher);
+$tikTokUploadStatusQuery = new CurrentUploadStatusForTiKTokQuery($fetcher);
+$currentRenderStatusQuery = new CurrentRenderStatusForVideoQuery($fetcher);
+$accountQuery = new AccountQuery($fetcher);
 
 foreach ($tikTokIdsToUpload as $tikTokIdToUpload) {
     $tiktok = $tikTokUploadQuery->execute($tikTokIdToUpload);
 
-    
-    // TODO recup upload status infos
-    // TODO recup render status infos
+    if ($tiktok === null) {
+        continue; // wtf
+    }
 
-    // TODO recup account infos
+    $uploadStatus = $tikTokUploadStatusQuery->execute($tikTokIdToUpload);
+
+    $isAlreadyUploading = $uploadStatus !== null && $uploadStatus->failedAt === null;
+    if ($isAlreadyUploading) {
+        continue;
+    }
+
+    $videoId = $tiktok->videoId;
+
+    $renderStatus = $currentRenderStatusQuery->execute($videoId);
+
+    if ($renderStatus === null || $renderStatus->finishedAt === null) {
+        continue; // not ready to be uploaded
+    }
+
+    $accountId = $tiktok->accountId;
+    $account = $accountQuery->execute($accountId);
+
+    if ($account === null) {
+        continue; // wtf
+    }
+
+    // TODO create upload status
     // TODO upload
-    // TODO success/failed
+    // TODO success/fail added to upload status
 }
