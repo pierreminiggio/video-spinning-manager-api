@@ -95,7 +95,7 @@ foreach ($tikTokIdsToUpload as $tikTokIdToUpload) {
     ]);
 
     $response = curl_exec($curl);
-    $httpCode = curl_getinfo($response, CURLINFO_HTTP_CODE);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
 
     if ($httpCode !== 200) {
