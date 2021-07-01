@@ -23,7 +23,11 @@ $query = new TikTokVideosToUploadQuery($fetcher);
 $tikTokIdsToUpload = $query->execute();
 
 foreach ($tikTokIdsToUpload as $tikTokIdToUpload) {
-    // todo recup tiktok infos
-    // todo recup upload status infos
-    // todo recup render status infos
+    // TODO recup tiktok infos
+    // TODO recup upload status infos
+    // TODO recup render status infos
+
+    // TODO recup account infos
+    // TODO upload
+    // TODO success/failed
 }
