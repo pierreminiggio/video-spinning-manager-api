@@ -21,6 +21,7 @@ use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
+use App\Query\Account\PostedOnAccountsQuery;
 use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\Account\TikTok\CanVideoBePostedOnThisTikTokAccountQuery;
 use App\Query\Editor\Preset\ListQuery;
@@ -128,6 +129,7 @@ class App
                     $fetcher,
                     new CurrentRenderStatusForVideoQuery($fetcher),
                     new SocialMediaAccountsByContentQuery($fetcher),
+                    new PostedOnAccountsQuery($fetcher),
                     $this->getCacheFolder()
                 ),
                 $this->getSerializer())
