@@ -1,6 +1,7 @@
 <?php
 
-use App\Query\Video\TikTokVideosToUploadQuery;
+use App\Query\Video\TikTok\TikTokUploadQuery;
+use App\Query\Video\TikTok\VideosToUploadQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
@@ -19,11 +20,15 @@ $fetcher = new DatabaseFetcher(new DatabaseConnection(
     DatabaseConnection::UTF8_MB4
 ));
 
-$query = new TikTokVideosToUploadQuery($fetcher);
+$query = new VideosToUploadQuery($fetcher);
 $tikTokIdsToUpload = $query->execute();
 
+$tikTokUploadQuery = new TikTokUploadQuery($fetcher);
+
 foreach ($tikTokIdsToUpload as $tikTokIdToUpload) {
-    // TODO recup tiktok infos
+    $tiktok = $tikTokUploadQuery->execute($tikTokIdToUpload);
+
+    
     // TODO recup upload status infos
     // TODO recup render status infos
 

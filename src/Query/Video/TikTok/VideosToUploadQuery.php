@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Query\Video;
+namespace App\Query\Video\TikTok;
 
 use App\Enum\UploadTypeEnum;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class TikTokVideosToUploadQuery
+class VideosToUploadQuery
 {
     public function __construct(
         private DatabaseFetcher $fetcher
