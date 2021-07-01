@@ -5,7 +5,7 @@ CREATE TABLE `spinned_content_upload_status` (
     `finished_at` DATETIME NULL,
     `remote_url` TEXT NULL,
     `failed_at` DATETIME NULL,
-    `fail_reason` DATETIME NULL,
+    `fail_reason` TEXT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
