@@ -7,7 +7,7 @@ use App\Entity\Account\AccountCollection;
 class VideoDetail
 {
     /**
-     * @param int[] $postedOnAccounts
+     * @param int[] $planifiedToBePostedOnAccounts
      */
     public function __construct(
         public Video $video,
@@ -15,7 +15,7 @@ class VideoDetail
         public bool $hasRenderedPreview,
         public EditorState $editorState,
         public AccountCollection $spinnedAccountSocialMediasAccounts,
-        public array $postedOnAccounts
+        public array $planifiedToBePostedOnAccounts
     )
     {
     }
