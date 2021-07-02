@@ -2,32 +2,40 @@
 
 namespace App\Query\Account;
 
-use App\Entity\Account\AccountCollection;
-use App\Entity\Account\SocialMediaAccount;
+use App\Entity\Account\AccountPost;
+use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class PostedOnAccountsQuery
 {
-    public function __construct(private DatabaseFetcher $fetcher)
+    public function __construct(private DatabaseFetcher $fetcher, private CurrentUploadStatusForTiKTokQuery $query)
     {
     }
 
     /**
-     * @param int[]
+     * @return AccountPost[]
      */
     public function execute(int $videoId): array
     {
-        $fetchedAccounts = $this->fetcher->query(
+        $fetchedTikToks = $this->fetcher->query(
             $this->fetcher->createQuery(
                 'spinned_content_tiktok_upload'
             )->select(
-                'account_id'
+                'id, account_id'
             )->where(
                 'video_id = :video_id'
             ),
             ['video_id' => $videoId]
         );
 
-        return array_map(fn (array $fetchedAccount): int => (int) $fetchedAccount['account_id'], $fetchedAccounts);
+        return array_map(function (array $fetchedTikTok): AccountPost {
+            $tikTokId = (int) $fetchedTikTok['id'];
+            $uploadStatus = $this->query->execute($tikTokId);
+
+            return new AccountPost(
+                (int) $fetchedTikTok['account_id'],
+                $uploadStatus !== null && $uploadStatus->remoteUrl ? $uploadStatus->remoteUrl : null
+            );
+        }, $fetchedTikToks);
     }
 }

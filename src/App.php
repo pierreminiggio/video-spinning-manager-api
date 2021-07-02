@@ -28,6 +28,7 @@ use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
 use App\Query\ToProcessListQuery;
+use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
 use App\Query\Video\VideoDetailQuery;
 use App\Query\VideoLinkQuery;
 use App\Serializer\Serializer;
@@ -129,7 +130,7 @@ class App
                     $fetcher,
                     new CurrentRenderStatusForVideoQuery($fetcher),
                     new SocialMediaAccountsByContentQuery($fetcher),
-                    new PostedOnAccountsQuery($fetcher),
+                    new PostedOnAccountsQuery($fetcher, new CurrentUploadStatusForTiKTokQuery($fetcher)),
                     $this->getCacheFolder()
                 ),
                 $this->getSerializer())

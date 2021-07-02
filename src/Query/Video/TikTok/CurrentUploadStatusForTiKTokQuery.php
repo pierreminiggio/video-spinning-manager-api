@@ -22,6 +22,7 @@ class CurrentUploadStatusForTiKTokQuery
             )->select(
                 'id',
                 'finished_at',
+                'remote_url',
                 'failed_at'
             )->where(
                 'upload_id = :upload_id AND upload_type = "' . UploadTypeEnum::TIKTOK . '"'
@@ -41,6 +42,7 @@ class CurrentUploadStatusForTiKTokQuery
         return new UploadStatus(
             (int) $fetchedStatus['id'],
             $fetchedStatus['finished_at'] ? new DateTime($fetchedStatus['finished_at']) : null,
+            $fetchedStatus['remote_url'],
             $fetchedStatus['failed_at'] ? new DateTime($fetchedStatus['failed_at']) : null
         );
     }

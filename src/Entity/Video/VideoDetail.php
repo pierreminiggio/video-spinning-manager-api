@@ -3,11 +3,12 @@
 namespace App\Entity\Video;
 
 use App\Entity\Account\AccountCollection;
+use App\Entity\Account\AccountPost;
 
 class VideoDetail
 {
     /**
-     * @param int[] $planifiedToBePostedOnAccounts
+     * @param AccountPost[] $postedOnAccounts
      */
     public function __construct(
         public Video $video,
@@ -15,7 +16,7 @@ class VideoDetail
         public bool $hasRenderedPreview,
         public EditorState $editorState,
         public AccountCollection $spinnedAccountSocialMediasAccounts,
-        public array $planifiedToBePostedOnAccounts
+        public array $postedOnAccounts
     )
     {
     }
