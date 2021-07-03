@@ -24,6 +24,7 @@ use App\Normalizer\NormalizerFactory;
 use App\Query\Account\PostedOnAccountsQuery;
 use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\Account\TikTok\CanVideoBePostedOnThisTikTokAccountQuery;
+use App\Query\Account\TikTok\PredictedNextPostTimeQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
@@ -129,7 +130,7 @@ class App
                 new VideoDetailQuery(
                     $fetcher,
                     new CurrentRenderStatusForVideoQuery($fetcher),
-                    new SocialMediaAccountsByContentQuery($fetcher),
+                    new SocialMediaAccountsByContentQuery($fetcher, new PredictedNextPostTimeQuery($fetcher)),
                     new PostedOnAccountsQuery($fetcher, new CurrentUploadStatusForTiKTokQuery($fetcher)),
                     $this->getCacheFolder()
                 ),

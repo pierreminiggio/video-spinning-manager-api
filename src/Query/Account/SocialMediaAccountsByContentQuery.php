@@ -4,11 +4,12 @@ namespace App\Query\Account;
 
 use App\Entity\Account\AccountCollection;
 use App\Entity\Account\SocialMediaAccount;
+use App\Query\Account\TikTok\PredictedNextPostTimeQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class SocialMediaAccountsByContentQuery
 {
-    public function __construct(private DatabaseFetcher $fetcher)
+    public function __construct(private DatabaseFetcher $fetcher, private PredictedNextPostTimeQuery $timeQuery)
     {
     }
 
@@ -36,11 +37,14 @@ class SocialMediaAccountsByContentQuery
         );
 
         return new AccountCollection(
-            array_map(fn (array $fetchedTikTokAccount): SocialMediaAccount => new SocialMediaAccount(
-                (int) $fetchedTikTokAccount['id'],
-                $fetchedTikTokAccount['tiktok_name'],
-                null
-            ),
+            array_map(function (array $fetchedTikTokAccount): SocialMediaAccount {
+                $tikTokAccountId = (int) $fetchedTikTokAccount['id'];
+                return new SocialMediaAccount(
+                    $tikTokAccountId,
+                    $fetchedTikTokAccount['tiktok_name'],
+                    $this->timeQuery->execute($tikTokAccountId)
+                );
+                },
             $fetchedTikTokAccounts
         ));
     }
