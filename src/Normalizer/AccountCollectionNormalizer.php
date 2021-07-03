@@ -34,5 +34,7 @@ class AccountCollectionNormalizer implements FocusedNormalizerInterface
                 $socialMediaAccounts
             );
         }
+
+        return $normalizedEntity;
     }
 }
