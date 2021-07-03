@@ -2,9 +2,9 @@
 
 namespace App\Normalizer;
 
-use App\Entity\Video\Video;
+use App\Entity\Account\SocialMediaAccount;
 
-class VideoNormalizer implements FocusedNormalizerInterface
+class SocialMediaAccountNormalizer implements FocusedNormalizerInterface
 {
 
     public function __construct(private NormalizerInterface $normalizer)
@@ -13,16 +13,14 @@ class VideoNormalizer implements FocusedNormalizerInterface
 
     public function supportsNormalization(mixed $entity): bool
     {
-        return $entity instanceof Video;
+        return $entity instanceof SocialMediaAccount;
     }
 
     public function normalize(mixed $entity): array
     {
-        /** @var Video $entity */
-        $finishedAt = $entity->finishedAt;
-
+        /** @var SocialMediaAccount $entity */
         $normalizedEntity = $this->normalizer->normalize($entity);
-        $normalizedEntity['finishedAt'] = $finishedAt?->format('Y-m-d H:i:s');
+        $normalizedEntity['predictedNextPostTime'] = $entity->predictedNextPostTime?->format('Y-m-d H:i:s');
 
         return $normalizedEntity;
     }

@@ -8,9 +8,17 @@ class NormalizerFactory
     {
         $defaultNormalizer = new DefaultNormalizer();
         $videoNormalizer = new VideoNormalizer(new Normalizer([$defaultNormalizer]));
+        $accountCollectionNormalizer = new AccountCollectionNormalizer(new Normalizer([
+            //,
+            $defaultNormalizer
+        ]));
 
         return new Normalizer([
-            new VideoDetailNormalizer(new Normalizer([$videoNormalizer, $defaultNormalizer])),
+            new VideoDetailNormalizer(new Normalizer([
+                $videoNormalizer,
+                $accountCollectionNormalizer,
+                $defaultNormalizer
+            ])),
             $videoNormalizer,
             $defaultNormalizer
         ]);

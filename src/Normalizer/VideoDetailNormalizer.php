@@ -21,6 +21,9 @@ class VideoDetailNormalizer implements FocusedNormalizerInterface
         /** @var VideoDetail $entity */
         $normalizedEntity = $this->normalizer->normalize($entity);
         $normalizedEntity['video'] = $this->normalizer->normalize($entity->video);
+        $normalizedEntity['spinnedAccountSocialMediasAccounts'] = $this->normalizer->normalize(
+            $entity->spinnedAccountSocialMediasAccounts
+        );
 
         return $normalizedEntity;
     }
