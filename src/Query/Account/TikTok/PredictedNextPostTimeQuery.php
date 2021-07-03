@@ -37,7 +37,7 @@ class PredictedNextPostTimeQuery
 
         $latestDate = new DateTime($dates[0]['publish_at']);
         $earliestDate = new DateTime($dates[1]['publish_at']);
-        $dateInterval = $latestDate->diff($earliestDate);
+        $dateInterval = $earliestDate->diff($latestDate);
 
         $nextPredictedDate = clone $latestDate;
         $nextPredictedDate->add($dateInterval);
