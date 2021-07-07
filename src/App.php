@@ -190,7 +190,7 @@ class App
         ) {
             $this->protectUsingToken($authHeader, $config);
             (new VideoFileController(
-                new VideoFileQuery($fetcher),
+                new VideoFileQuery($fetcher, new CurrentRenderStatusForVideoQuery($fetcher)),
                 $this->getSerializer()
             ))($this->getRequestBody());
             exit;
