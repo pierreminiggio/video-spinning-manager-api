@@ -186,7 +186,7 @@ class App
             exit;
         } elseif (
             $this->isGetRequest()
-            $path === '/tiktok-video-file'
+            && $path === '/tiktok-video-file'
         ) {
             $this->protectUsingToken($authHeader, $config);
             (new VideoFileController(
