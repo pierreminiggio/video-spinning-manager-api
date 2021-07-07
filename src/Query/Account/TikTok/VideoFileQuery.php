@@ -24,11 +24,11 @@ class VideoFileQuery
                 'tu'
             )->join(
                 'spinned_content_upload_status as us',
-                'us.upload_id = tu.id AND tu.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
+                'us.upload_id = tu.id AND us.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
             )->select(
                 'tu.video_id'
             )->where(
-                'us.remote_url = :tiktok_url AND tu.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
+                'us.remote_url = :tiktok_url AND us.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
             ),
             ['tiktok_url' => $tiktokUrl]
         );
