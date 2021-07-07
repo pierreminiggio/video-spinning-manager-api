@@ -3,11 +3,11 @@
 namespace App\Query\Account\TikTok;
 
 use App\Entity\Social\TikTok\Video;
-use App\Query\QueryWithIdParameter;
+use App\Enum\UploadTypeEnum;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class VideoFileQuery implements QueryWithIdParameter
+class VideoFileQuery
 {
     public function __construct(
         private DatabaseFetcher                  $fetcher,
@@ -16,18 +16,21 @@ class VideoFileQuery implements QueryWithIdParameter
     {
     }
 
-    public function execute(int $tiktokId): ?Video
+    public function execute(string $tiktokUrl): ?Video
     {
         $querieds = $this->fetcher->query(
             $this->fetcher->createQuery(
                 'spinned_content_tiktok_upload',
                 'tu'
+            )->join(
+                'spinned_content_upload_status as us',
+                'us.upload_id = tu.id AND tu.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
             )->select(
                 'tu.video_id'
             )->where(
-                'id = :id'
+                'us.remote_url = :tiktok_url AND tu.upload_type = "' . UploadTypeEnum::TIKTOK . '"'
             ),
-            ['id' => $tiktokId]
+            ['tiktok_url' => $tiktokUrl]
         );
         
         if (! $querieds) {
