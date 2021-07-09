@@ -13,6 +13,7 @@ use App\Controller\Editor\Text\Preset\ListController;
 use App\Controller\Editor\UpdateController;
 use App\Controller\Render\DisplayController;
 use App\Controller\Social\TikTok\PostController;
+use App\Controller\Social\TikTok\VideoFileController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
@@ -25,6 +26,7 @@ use App\Query\Account\PostedOnAccountsQuery;
 use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\Account\TikTok\CanVideoBePostedOnThisTikTokAccountQuery;
 use App\Query\Account\TikTok\PredictedNextPostTimeQuery;
+use App\Query\Account\TikTok\VideoFileQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\ToProcessDetailQuery;
@@ -181,6 +183,16 @@ class App
                 new CanVideoBePostedOnThisTikTokAccountQuery($fetcher),
                 new PostCommand($fetcher)
             ))($id, $this->getRequestBody());
+            exit;
+        } elseif (
+            $this->isPostRequest()
+            && $path === '/tiktok-video-file'
+        ) {
+            $this->protectUsingToken($authHeader, $config);
+            (new VideoFileController(
+                new VideoFileQuery($fetcher, new CurrentRenderStatusForVideoQuery($fetcher)),
+                $this->getSerializer()
+            ))($this->getRequestBody());
             exit;
         }
 
