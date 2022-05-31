@@ -28,7 +28,7 @@ class ToProcessListQuery
                     'youtube_video as yv',
                     'yv.id = scyv.youtube_id'
                 )
-                ->where('sc.spinned = 0')
+                ->where('sc.spinned = 0 AND yv.url IS NOT NULL')
                 ->orderBy('yv.created_at')
         );
 
