@@ -11,4 +11,19 @@ class Subtitles
     )
     {
     }
+
+    public function getStartTime(): float
+    {
+        return $this->startTime;
+    }
+
+    public function getEndTime(): float
+    {
+        return $this->endTime;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
 }

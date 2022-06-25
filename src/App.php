@@ -199,7 +199,10 @@ class App
             && $id = $this->getIntAfterPathPrefix($path, '/subtitles/')
         ) {
             $this->protectUsingToken($authHeader, $config);
-            (new DetailController(new LanguagesAndSubtitlesQuery($fetcher, $config['token'] ?? ''), $this->getSerializer()))($id);
+            (new DetailController(
+                new LanguagesAndSubtitlesQuery($fetcher, $config['token'] ?? ''),
+                $this->getSerializer()
+            ))($id);
         }
 
         http_response_code(404);
