@@ -19,6 +19,7 @@ use App\Controller\EndProcessController;
 use App\Controller\ThumbnailController;
 use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
+use App\Denormalizer\LanguagesAndSubtitlesDenormalizer;
 use App\Http\Request\JsonBodyParser;
 use App\Normalizer\NormalizerFactory;
 use App\Query\Account\PostedOnAccountsQuery;
@@ -26,6 +27,7 @@ use App\Query\Account\SocialMediaAccountsByContentQuery;
 use App\Query\Account\TikTok\CanVideoBePostedOnThisTikTokAccountQuery;
 use App\Query\Account\TikTok\PredictedNextPostTimeQuery;
 use App\Query\Account\TikTok\VideoFileQuery;
+use App\Query\Content\YoutubeIdQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\Subtitles\LanguagesAndSubtitlesQuery;
@@ -200,7 +202,11 @@ class App
         ) {
             $this->protectUsingToken($authHeader, $config);
             (new DetailController(
-                new LanguagesAndSubtitlesQuery($fetcher, $config['token'] ?? ''),
+                new LanguagesAndSubtitlesQuery(
+                    new YoutubeIdQuery($fetcher),
+                    $config['token'] ?? '',
+                    new LanguagesAndSubtitlesDenormalizer()
+                ),
                 $this->getSerializer()
             ))($id);
         }

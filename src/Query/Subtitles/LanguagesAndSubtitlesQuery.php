@@ -2,45 +2,25 @@
 
 namespace App\Query\Subtitles;
 
-use App\Entity\Subtitles\LanguageAndSubtitles;
+use App\Denormalizer\LanguagesAndSubtitlesDenormalizer;
 use App\Entity\Subtitles\LanguagesAndSubtitles;
-use App\Entity\Subtitles\Subtitles;
+use App\Query\Content\YoutubeIdQuery;
 use App\Query\QueryWithIdParameter;
-use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 use RuntimeException;
 
 class LanguagesAndSubtitlesQuery implements QueryWithIdParameter
 {
-    public function __construct(private DatabaseFetcher $fetcher, private string $token)
+    public function __construct(
+        private YoutubeIdQuery $youtubeIdQuery,
+        private string $token,
+        private LanguagesAndSubtitlesDenormalizer $denormalizer
+    )
     {
     }
 
     public function execute(int $id): ?LanguagesAndSubtitles
     {
-        $querieds = $this->fetcher->query(
-            $this->fetcher->createQuery(
-                'spinned_content as sc'
-            )->select(
-                'sc.id as id, yv.youtube_id as youtube_id'
-            )->join(
-                'spinned_content_youtube_video as scyv',
-                'sc.id = scyv.spinned_id'
-            )->join(
-                'youtube_video as yv',
-                'yv.id = scyv.youtube_id'
-            )
-            ->where(
-                'sc.id = :id'
-            ),
-            ['id' => $id]
-        );
-        
-        if (! $querieds) {
-            return null;
-        }
-
-        $queried = $querieds[0];
-        $youtubeId = $queried['youtube_id'];
+        $youtubeId = $this->youtubeIdQuery->execute($id);
 
         if (! $youtubeId) {
             return null;
@@ -77,24 +57,6 @@ class LanguagesAndSubtitlesQuery implements QueryWithIdParameter
             throw new RuntimeException('Server error : Bad subtitles JSON response');
         }
 
-        return new LanguagesAndSubtitles(array_filter(array_map(function (array $entry): ?LanguageAndSubtitles {
-            if (! isset($entry['language'], $entry['subtitles'])) {
-                return null;
-            }
-
-            return new LanguageAndSubtitles($entry['language'], array_filter(
-                array_map(function (array $subtitlesEntry): ?Subtitles {
-                    if (! isset($subtitlesEntry['startTime'], $subtitlesEntry['endTime'], $subtitlesEntry['text'])) {
-                        return null;
-                    }
-
-                    return new Subtitles(
-                        $subtitlesEntry['startTime'],
-                        $subtitlesEntry['endTime'],
-                        $subtitlesEntry['text']
-                    );
-                }, $entry['subtitles'])
-            ));
-        }, $subtitlesJsonResponse)));
+        return $this->denormalizer->denormalize($subtitlesJsonResponse);
     }
 }
