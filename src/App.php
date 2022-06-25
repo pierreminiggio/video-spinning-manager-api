@@ -34,6 +34,7 @@ use App\Query\Content\YoutubeIdQuery;
 use App\Query\Editor\Preset\ListQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\Subtitles\LanguagesAndSubtitlesQuery;
+use App\Query\Subtitles\LanguagesAndSubtitlesUpdateQuery;
 use App\Query\Subtitles\SubtitlesApiResponseHandler;
 use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
 use App\Query\Video\VideoDetailQuery;
@@ -216,7 +217,7 @@ class App
         ) {
             $this->protectUsingToken($authHeader, $config);
             (new DetailController(
-                new LanguagesAndSubtitlesQuery(
+                new LanguagesAndSubtitlesUpdateQuery(
                     new YoutubeIdQuery($fetcher),
                     $config['token'] ?? '',
                     new SubtitlesApiResponseHandler(new LanguagesAndSubtitlesDenormalizer())
