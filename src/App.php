@@ -36,6 +36,7 @@ use App\Query\Video\VideoDetailQuery;
 use App\Query\VideoLinkQuery;
 use App\Serializer\Serializer;
 use App\Serializer\SerializerInterface;
+use App\Subtitles\LanguagesAndSubtitlesQuery;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
@@ -136,8 +137,8 @@ class App
                     new PostedOnAccountsQuery($fetcher, new CurrentUploadStatusForTiKTokQuery($fetcher)),
                     $this->getCacheFolder()
                 ),
-                $this->getSerializer())
-            )($id);
+                $this->getSerializer()
+            ))($id);
             exit;
         } elseif (
             $this->isPostRequest()
@@ -194,6 +195,11 @@ class App
                 $this->getSerializer()
             ))($this->getRequestBody());
             exit;
+        } elseif (
+            $this->isGetRequest()
+            && $id = $this->getIntAfterPathPrefix($path, '/subtitles/')
+        ) {
+            (new DetailController(new LanguagesAndSubtitlesQuery($fetcher, $token), $this->getSerializer()))($id);
         }
 
         http_response_code(404);
@@ -210,13 +216,20 @@ class App
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
-    protected function getIntAfterPathPrefix(string $path, string $prefix): ?int
+    protected function getStringAfterPathPrefix(string $path, string $prefix): ?string
     {
         if (strpos($path, $prefix) !== 0) {
             return null;
         }
 
-        $id = (int) substr($path, strlen($prefix));
+        $string = substr($path, strlen($prefix));
+
+        return $string ?? null;
+    }
+
+    protected function getIntAfterPathPrefix(string $path, string $prefix): ?int
+    {
+        $id = (int) $this->getStringAfterPathPrefix($path, $prefix);
 
         return $id ?? null;
     }
