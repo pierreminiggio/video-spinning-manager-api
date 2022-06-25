@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Subtitles;
+namespace App\Query\Subtitles;
 
 use App\Entity\Subtitles\LanguagesAndSubtitles;
 use App\Query\QueryWithIdParameter;
