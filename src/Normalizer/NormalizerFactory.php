@@ -21,6 +21,7 @@ class NormalizerFactory
                 $defaultNormalizer
             ])),
             $videoNormalizer,
+            new LanguagesAndSubtitlesNormalizer(),
             $defaultNormalizer
         ]);
     }

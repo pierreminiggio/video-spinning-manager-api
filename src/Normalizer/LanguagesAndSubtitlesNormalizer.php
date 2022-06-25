@@ -5,6 +5,7 @@ namespace App\Normalizer;
 use App\Entity\Subtitles\LanguageAndSubtitles;
 use App\Entity\Subtitles\LanguagesAndSubtitles;
 use App\Entity\Subtitles\Subtitles;
+use RuntimeException;
 
 class LanguagesAndSubtitlesNormalizer implements FocusedNormalizerInterface
 {
@@ -15,7 +16,9 @@ class LanguagesAndSubtitlesNormalizer implements FocusedNormalizerInterface
 
     public function normalize(mixed $entity): array
     {
-        /** @var LanguagesAndSubtitles $entity */
+        if (! $entity instanceof LanguagesAndSubtitles) {
+            throw new RuntimeException('Unsupported entity');
+        }
 
         return array_map(fn (LanguageAndSubtitles $languageAndSubtitles): array => [
             'language' => $languageAndSubtitles->getLanguage(),
