@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Query;
+namespace App\Query\Content;
 
 use App\Entity\ToProcess;
 use App\Entity\ToProcessDetail;
 use App\Entity\Video\Video;
+use App\Query\QueryWithIdParameter;
 use DateTime;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 

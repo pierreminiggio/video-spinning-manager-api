@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Query\ToProcessListQuery;
+use App\Query\Content\ToProcessListQuery;
 
 class ToProcessListController
 {

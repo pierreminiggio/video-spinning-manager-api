@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Query;
+namespace App\Query\Content;
 
 use App\Query\QueryWithIdParameter;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
@@ -37,6 +37,6 @@ class VideoLinkQuery implements QueryWithIdParameter
             return null;
         }
 
-        return $querieds[0]['url'];
+        return $querieds[0]['url'] ?? null;
     }
 }

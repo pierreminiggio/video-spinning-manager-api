@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Query;
+namespace App\Query\Content;
 
 use App\Entity\ToProcess;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
