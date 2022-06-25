@@ -7,6 +7,7 @@ use App\Entity\Subtitles\LanguagesAndSubtitles;
 use App\Entity\Subtitles\Subtitles;
 use App\Query\QueryWithIdParameter;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
+use RuntimeException;
 
 class LanguagesAndSubtitlesQuery implements QueryWithIdParameter
 {
@@ -59,25 +60,21 @@ class LanguagesAndSubtitlesQuery implements QueryWithIdParameter
         }
 
         if ($httpCode === 401) {
-            http_response_code(401);
-            exit;
+            throw new RuntimeException('Unauthorized');
         }
 
         if ($httpCode !== 200) {
-            http_response_code(500);
-            exit;
+            throw new RuntimeException('Server error : Bad HTTP code');
         }
 
         if (! $subtitlesResponse) {
-            http_response_code(500);
-            exit;
+            throw new RuntimeException('Server error : Emptu subtitles response');
         }
 
         $subtitlesJsonResponse = json_decode($subtitlesResponse, true);
 
         if (! $subtitlesJsonResponse) {
-            http_response_code(500);
-            exit;
+            throw new RuntimeException('Server error : Bad subtitles JSON response');
         }
 
         return new LanguagesAndSubtitles(array_filter(array_map(function (array $entry): ?LanguageAndSubtitles {
