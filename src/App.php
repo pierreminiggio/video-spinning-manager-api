@@ -211,6 +211,7 @@ class App
                 ),
                 $this->getSerializer()
             ))($id);
+            exit;
         } elseif (
             $this->isPostRequest()
             && $id = $this->getIntAfterPathPrefix($path, '/subtitles/')
@@ -224,6 +225,7 @@ class App
                 ),
                 $this->getSerializer()
             ))($id);
+            exit;
         }
 
         http_response_code(404);
