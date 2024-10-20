@@ -16,11 +16,10 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "athlon1600/youtube-downloader": "dev-master",
+        "ext-curl": "*",
         "pierreminiggio/config-provider": "^1.0",
         "pierreminiggio/database-fetcher": "^1.0",
         "pierreminiggio/github-action-remotion-renderer": "dev-main",
-        "pierreminiggio/mp4-youtube-video-downloader": "^1.0",
-        "ext-curl": "*"
+        "pierreminiggio/mp4-youtube-video-downloader": "dev-main"
     }
 }

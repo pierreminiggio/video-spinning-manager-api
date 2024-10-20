@@ -40,9 +40,11 @@ use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
 use App\Query\Video\VideoDetailQuery;
 use App\Serializer\Serializer;
 use App\Serializer\SerializerInterface;
+use Exception;
 use PierreMiniggio\DatabaseConnection\DatabaseConnection;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 use PierreMiniggio\MP4YoutubeVideoDownloader\Downloader;
+use PierreMiniggio\MP4YoutubeVideoDownloader\Repository;
 use RuntimeException;
 
 class App
@@ -148,7 +150,38 @@ class App
             && $id = $this->getIntAfterPathPrefix($path, '/download-video/')
         ) {
             $this->protectUsingToken($authHeader, $config);
-            (new DownloaderController(new VideoLinkQuery($fetcher), $this->getCacheFolder(), new Downloader()))($id);
+
+            $yt1dApiRepoConfig = $config['yt1dApiRepo'] ?? null;
+
+            if (! $yt1dApiRepoConfig) {
+                throw new Exception('Unset yt1dApiRepo config error');
+            }
+
+            $githubActionToken = $yt1dApiRepoConfig['token'] ?? null;
+
+            if (! $githubActionToken) {
+                throw new Exception('Unset githubActionToken config error');
+            }
+
+            $yt1dApiOwner = $yt1dApiRepoConfig['owner'] ?? null;
+
+            if (! $yt1dApiOwner) {
+                throw new Exception('Unset yt1dApiOwner config error');
+            }
+
+            $yt1dApiRepo = $yt1dApiRepoConfig['repo'] ?? null;
+
+            if (! $yt1dApiRepo) {
+                throw new Exception('Unset yt1dApiRepo config error');
+            }
+
+            (new DownloaderController(new VideoLinkQuery($fetcher), $this->getCacheFolder(), new Downloader(
+                new Repository(
+                    $githubActionToken,
+                    $yt1dApiOwner,
+                    $yt1dApiRepo
+                )
+            )))($id);
             exit;
         } elseif (
             $this->isPostRequest()
