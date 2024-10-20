@@ -39,10 +39,20 @@ class DownloaderController
 
         set_time_limit(0);
 
+        $error = null;
+
         try {
             $this->downloader->download($link, $filename);
         } catch (Throwable $e) {
+            $error = $e->getMessage();
             shell_exec('youtube-dl https://youtu.be/' . substr($link, strlen('https://www.youtube.com/watch?v=')) . ' -f mp4 --output ' . $filename);
+        }
+
+        if (! file_exists($filename)) {
+            http_response_code(500);
+            echo json_encode(['error' => $error]);
+
+            return;
         }
 
         http_response_code(204);
