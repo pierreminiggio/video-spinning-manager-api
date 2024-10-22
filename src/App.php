@@ -16,6 +16,7 @@ use App\Controller\Social\TikTok\PostController;
 use App\Controller\Social\TikTok\VideoFileController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
+use App\Controller\Social\TuUploadListController;
 use App\Controller\ThumbnailController;
 use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
@@ -37,6 +38,7 @@ use App\Query\Subtitles\LanguagesAndSubtitlesQuery;
 use App\Query\Subtitles\LanguagesAndSubtitlesUpdateQuery;
 use App\Query\Subtitles\SubtitlesApiResponseHandler;
 use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
+use App\Query\Video\TikTok\VideosToUploadQuery;
 use App\Query\Video\VideoDetailQuery;
 use App\Serializer\Serializer;
 use App\Serializer\SerializerInterface;
@@ -96,6 +98,13 @@ class App
             $dbConfig['password'],
             DatabaseConnection::UTF8_MB4
         ));
+
+        $apiUrl = $config['url'] ?? null;
+        if (! $apiUrl) {
+            http_response_code(500);
+            echo json_encode(['message' => 'Project url isn\'t defined in config']);
+            exit;
+        }
 
         if ($path === '/' && $this->isGetRequest()) {
             $this->protectUsingToken($authHeader, $config);
@@ -258,6 +267,10 @@ class App
                 ),
                 $this->getSerializer()
             ))($id);
+            exit;
+        } elseif ($path === '/to-upload' && $this->isGetRequest()) {
+            $this->protectUsingToken($authHeader, $config);
+            (new TuUploadListController($apiUrl, new VideosToUploadQuery($fetcher)))();
             exit;
         }
 
