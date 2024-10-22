@@ -47,6 +47,7 @@ class VideosToUploadQuery
         if (! $idsOnly) {
             $selectArgs[] = 'ta.tiktok_name';
             $selectArgs[] = 'tu.legend';
+            $selectArgs[] = 'v.id as file_url';
             $selectArgs[] = 'tu.publish_at';
         }
 
@@ -96,6 +97,7 @@ class VideosToUploadQuery
                 'id' => $queriedVideo['id'],
                 'tiktok_name' => $queriedVideo['tiktok_name'],
                 'legend' => $queriedVideo['legend'],
+                'file_url' => $queriedVideo['file_url'],
                 'publish_at' => $queriedVideo['publish_at'],
             ];
         }, $queriedVideos);
