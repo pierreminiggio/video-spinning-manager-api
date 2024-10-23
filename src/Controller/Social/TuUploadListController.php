@@ -18,7 +18,7 @@ class TuUploadListController
         $apiUrl = $this->apiUrl;
 
         $videos = array_map(function (array $video) use ($apiUrl): array {
-            $video['fileUrl'] = $apiUrl . '/render/' . $video['file_url'];
+            $video['fileUrl'] = $apiUrl . '/render/' . $video['fileUrl'];
 
             return $video;
         }, $videos);
