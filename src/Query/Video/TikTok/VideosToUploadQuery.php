@@ -95,10 +95,10 @@ class VideosToUploadQuery
 
             return [
                 'id' => $queriedVideo['id'],
-                'tiktok_name' => $queriedVideo['tiktok_name'],
+                'tiktokName' => $queriedVideo['tiktok_name'],
                 'legend' => $queriedVideo['legend'],
-                'file_url' => $queriedVideo['file_url'],
-                'publish_at' => $queriedVideo['publish_at'],
+                'fileUrl' => $queriedVideo['file_url'],
+                'publishAt' => $queriedVideo['publish_at'],
             ];
         }, $queriedVideos);
     }
