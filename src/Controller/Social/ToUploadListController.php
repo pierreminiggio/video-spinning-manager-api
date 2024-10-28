@@ -4,7 +4,7 @@ namespace App\Controller\Social;
 
 use App\Query\Video\TikTok\VideosToUploadQuery;
 
-class TuUploadListController
+class ToUploadListController
 {
     public function __construct(private string $apiUrl, private VideosToUploadQuery $query)
     {

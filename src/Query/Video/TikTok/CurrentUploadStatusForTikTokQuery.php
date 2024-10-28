@@ -8,7 +8,7 @@ use DateTime;
 use NeutronStars\Database\Query;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
-class CurrentUploadStatusForTiKTokQuery
+class CurrentUploadStatusForTikTokQuery
 {
     public function __construct(private DatabaseFetcher $fetcher)
     {

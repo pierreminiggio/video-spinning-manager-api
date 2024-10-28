@@ -4,6 +4,7 @@ namespace App;
 
 use App\Command\Editor\UpdateCommand;
 use App\Command\EndProcessCommand;
+use App\Command\Social\MarkAsUploadingCommand;
 use App\Command\Social\TikTok\PostCommand;
 use App\Command\Video\CreateCommand;
 use App\Command\Video\FinishCommand;
@@ -16,7 +17,8 @@ use App\Controller\Social\TikTok\PostController;
 use App\Controller\Social\TikTok\VideoFileController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
-use App\Controller\Social\TuUploadListController;
+use App\Controller\Social\ToUploadListController;
+use App\Controller\Social\ToUploadToUploadingController;
 use App\Controller\ThumbnailController;
 use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
@@ -37,7 +39,8 @@ use App\Query\Render\CurrentRenderStatusForVideoQuery;
 use App\Query\Subtitles\LanguagesAndSubtitlesQuery;
 use App\Query\Subtitles\LanguagesAndSubtitlesUpdateQuery;
 use App\Query\Subtitles\SubtitlesApiResponseHandler;
-use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
+use App\Query\Video\TikTok\CurrentUploadStatusForTikTokQuery;
+use App\Query\Video\TikTok\TikTokUploadQuery;
 use App\Query\Video\TikTok\VideosToUploadQuery;
 use App\Query\Video\VideoDetailQuery;
 use App\Serializer\Serializer;
@@ -148,7 +151,7 @@ class App
                     $fetcher,
                     new CurrentRenderStatusForVideoQuery($fetcher),
                     new SocialMediaAccountsByContentQuery($fetcher, new PredictedNextPostTimeQuery($fetcher)),
-                    new PostedOnAccountsQuery($fetcher, new CurrentUploadStatusForTiKTokQuery($fetcher)),
+                    new PostedOnAccountsQuery($fetcher, new CurrentUploadStatusForTikTokQuery($fetcher)),
                     $this->getCacheFolder()
                 ),
                 $this->getSerializer()
@@ -270,7 +273,17 @@ class App
             exit;
         } elseif ($path === '/to-upload' && $this->isGetRequest()) {
             $this->protectUsingToken($authHeader, $config);
-            (new TuUploadListController($apiUrl, new VideosToUploadQuery($fetcher)))();
+            (new ToUploadListController($apiUrl, new VideosToUploadQuery($fetcher)))();
+            exit;
+        } elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntBetweenPrefixAndSuffix($path, '/to-upload/', 'to-uploading')
+        ) {
+            (new ToUploadToUploadingController(
+                new TikTokUploadQuery($fetcher),
+                new CurrentUploadStatusForTikTokQuery($fetcher),
+                new MarkAsUploadingCommand($fetcher)
+            ))($id);
             exit;
         }
 
@@ -303,6 +316,23 @@ class App
     {
         $id = (int) $this->getStringAfterPathPrefix($path, $prefix);
 
+        return $id ?? null;
+    }
+
+    protected function getIntBetweenPrefixAndSuffix(string $path, string $prefix, string $suffix): ?int
+    {
+        $maybeIdAndSuffix = $this->getStringAfterPathPrefix($path, $prefix);
+
+        if (! $maybeIdAndSuffix) {
+            return null;
+        }
+
+        if (! str_ends_with($maybeIdAndSuffix, $suffix)) {
+            return null;
+        }
+
+        $id = (int) substr($maybeIdAndSuffix, 0, strlen($maybeIdAndSuffix) - strlen($suffix) - 1);
+        
         return $id ?? null;
     }
 

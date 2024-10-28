@@ -6,7 +6,7 @@ use App\Command\Social\MarkAsUploadingCommand;
 use App\Enum\UploadTypeEnum;
 use App\Query\Account\TikTok\AccountQuery;
 use App\Query\Render\CurrentRenderStatusForVideoQuery;
-use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
+use App\Query\Video\TikTok\CurrentUploadStatusForTikTokQuery;
 use App\Query\Video\TikTok\TikTokUploadQuery;
 use App\Query\Video\TikTok\VideosToUploadQuery;
 use PierreMiniggio\ConfigProvider\ConfigProvider;
@@ -32,7 +32,7 @@ $query = new VideosToUploadQuery($fetcher);
 $tikTokIdsToUpload = $query->execute();
 
 $tikTokUploadQuery = new TikTokUploadQuery($fetcher);
-$tikTokUploadStatusQuery = new CurrentUploadStatusForTiKTokQuery($fetcher);
+$tikTokUploadStatusQuery = new CurrentUploadStatusForTikTokQuery($fetcher);
 $currentRenderStatusQuery = new CurrentRenderStatusForVideoQuery($fetcher);
 $accountQuery = new AccountQuery($fetcher);
 $markAsUploadingCommand = new MarkAsUploadingCommand($fetcher);

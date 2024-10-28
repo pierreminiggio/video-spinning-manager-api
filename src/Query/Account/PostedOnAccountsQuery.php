@@ -3,12 +3,12 @@
 namespace App\Query\Account;
 
 use App\Entity\Account\AccountPost;
-use App\Query\Video\TikTok\CurrentUploadStatusForTiKTokQuery;
+use App\Query\Video\TikTok\CurrentUploadStatusForTikTokQuery;
 use PierreMiniggio\DatabaseFetcher\DatabaseFetcher;
 
 class PostedOnAccountsQuery
 {
-    public function __construct(private DatabaseFetcher $fetcher, private CurrentUploadStatusForTiKTokQuery $query)
+    public function __construct(private DatabaseFetcher $fetcher, private CurrentUploadStatusForTikTokQuery $query)
     {
     }
 
