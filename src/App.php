@@ -4,6 +4,7 @@ namespace App;
 
 use App\Command\Editor\UpdateCommand;
 use App\Command\EndProcessCommand;
+use App\Command\Social\MarkAsFinishedCommand;
 use App\Command\Social\MarkAsUploadingCommand;
 use App\Command\Social\TikTok\PostCommand;
 use App\Command\Video\CreateCommand;
@@ -18,7 +19,8 @@ use App\Controller\Social\TikTok\VideoFileController;
 use App\Controller\Video\CreateController;
 use App\Controller\EndProcessController;
 use App\Controller\Social\ToUploadListController;
-use App\Controller\Social\ToUploadToUploadingController;
+use App\Controller\Social\NonUploadedToUploadingController;
+use App\Controller\Social\UploadingToUploadedController;
 use App\Controller\ThumbnailController;
 use App\Controller\ToProcessListController;
 use App\Controller\Video\FinishController;
@@ -277,13 +279,26 @@ class App
             exit;
         } elseif (
             $this->isPostRequest()
-            && $id = $this->getIntBetweenPrefixAndSuffix($path, '/to-upload/', 'to-uploading')
+            && $id = $this->getIntBetweenPrefixAndSuffix($path, '/to-upload/', '/to-uploading')
         ) {
-            (new ToUploadToUploadingController(
+            $this->protectUsingToken($authHeader, $config);
+            (new NonUploadedToUploadingController(
                 new TikTokUploadQuery($fetcher),
                 new CurrentUploadStatusForTikTokQuery($fetcher),
                 new MarkAsUploadingCommand($fetcher)
             ))($id);
+            exit;
+        } elseif (
+            $this->isPostRequest()
+            && $id = $this->getIntBetweenPrefixAndSuffix($path, '/uploading/', '/to-uploaded')
+        ) {
+            $this->protectUsingToken($authHeader, $config);
+            (new UploadingToUploadedController(
+                new JsonBodyParser(),
+                new TikTokUploadQuery($fetcher),
+                new CurrentUploadStatusForTikTokQuery($fetcher),
+                new MarkAsFinishedCommand($fetcher)
+            ))($id, $this->getRequestBody());
             exit;
         }
 
@@ -331,8 +346,8 @@ class App
             return null;
         }
 
-        $id = (int) substr($maybeIdAndSuffix, 0, strlen($maybeIdAndSuffix) - strlen($suffix) - 1);
-        
+        $id = (int) substr($maybeIdAndSuffix, 0, strlen($maybeIdAndSuffix) - strlen($suffix));
+
         return $id ?? null;
     }
 

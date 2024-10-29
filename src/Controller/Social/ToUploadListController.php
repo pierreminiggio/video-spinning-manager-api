@@ -12,7 +12,6 @@ class ToUploadListController
 
     public function __invoke(): void
     {
-        http_response_code(200);
         $videos = $this->query->execute(false);
 
         $apiUrl = $this->apiUrl;
@@ -23,6 +22,7 @@ class ToUploadListController
             return $video;
         }, $videos);
 
+        http_response_code(200);
         echo json_encode($videos);
     }
 }

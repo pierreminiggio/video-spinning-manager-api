@@ -7,7 +7,7 @@ use App\Enum\UploadTypeEnum;
 use App\Query\Video\TikTok\CurrentUploadStatusForTikTokQuery;
 use App\Query\Video\TikTok\TikTokUploadQuery;
 
-class ToUploadToUploadingController
+class NonUploadedToUploadingController
 {
 
     public function __construct(
